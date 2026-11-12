@@ -1,11 +1,10 @@
+
 const $ = id => document.getElementById(id);
 
 let cookies = 0;
 let totalCookies = 0;
 let clickPower = 1;
 let sound = false;
-let musicTimer = null;
-let musicStep = 0;
 let audioContext = null;
 
 const SAVE_KEY = "cookieClickerSave";
@@ -83,13 +82,12 @@ function showToast(message) {
   toast.style.opacity = "1";
 
   clearTimeout(showToast.timer);
-
   showToast.timer = setTimeout(() => {
     toast.style.opacity = "0";
   },1900);
 }
 
-/* AUDIO */
+/* SOUND EFFECTS ONLY - NO MUSIC */
 
 function getAudio() {
   if (!audioContext) {
@@ -137,7 +135,6 @@ function playClick() {
 
 function playPurchase() {
   if (!sound) return;
-
   [523,659,784,1047].forEach((frequency,index) => {
     tone(frequency,.15,"triangle",.035,index*.075);
   });
@@ -145,75 +142,9 @@ function playPurchase() {
 
 function playBonus() {
   if (!sound) return;
-
   [523,659,784,1047,1318,1568].forEach((frequency,index) => {
     tone(frequency,.2,"triangle",.04,index*.065);
   });
-}
-
-/*
-  A little retro holiday-inspired tune:
-  a repeating melody, soft bass, and chord backing.
-*/
-
-const melody = [
-  659,784,880,784,659,523,587,659,
-  587,523,440,523,587,659,784,659,
-  880,784,659,587,523,587,659,784,
-  880,988,880,784,659,587,523,659
-];
-
-const bass = [
-  130.81,130.81,164.81,164.81,
-  174.61,174.61,146.83,146.83
-];
-
-const chords = [
-  [261.63,329.63,392],
-  [220,261.63,329.63],
-  [174.61,220,261.63],
-  [196,246.94,293.66]
-];
-
-function musicBeat() {
-  if (!sound) return;
-
-  const note = melody[musicStep % melody.length];
-  const bassNote = bass[musicStep % bass.length];
-
-  tone(note,.19,"square",.014);
-
-  if (musicStep % 2 === 0) {
-    tone(note*1.5,.14,"triangle",.008,.025);
-    tone(bassNote,.32,"triangle",.022);
-  }
-
-  if (musicStep % 4 === 0) {
-    const chord = chords[Math.floor(musicStep/4) % chords.length];
-
-    chord.forEach((frequency,index) => {
-      tone(frequency,.38,"sine",.009,index*.018);
-    });
-  }
-
-  if (musicStep % 2 === 1) {
-    tone(110,.035,"sine",.014);
-  }
-
-  musicStep++;
-}
-
-function startMusic() {
-  if (!sound || musicTimer) return;
-  musicBeat();
-  musicTimer = setInterval(musicBeat,230);
-}
-
-function stopMusic() {
-  if (musicTimer) {
-    clearInterval(musicTimer);
-    musicTimer = null;
-  }
 }
 
 function setSound(enabled) {
@@ -223,16 +154,11 @@ function setSound(enabled) {
     localStorage.setItem("cookieClickerSound",sound ? "on" : "off");
   } catch {}
 
-  $("soundBtn").textContent = sound ? "🔊 Sound: On" : "🔇 Sound: Off";
-  $("musicSettingsBtn").textContent = sound ? "Turn Sound Off" : "Turn Sound On";
+  $("soundBtn").textContent =
+    sound ? "🔊 Sound Effects: On" : "🔇 Sound Effects: Off";
 
-  if (sound) {
-    getAudio();
-    startMusic();
-    playPurchase();
-  } else {
-    stopMusic();
-  }
+  $("musicSettingsBtn").textContent =
+    sound ? "Turn Sound Effects Off" : "Turn Sound Effects On";
 }
 
 try {
@@ -241,30 +167,26 @@ try {
   sound = false;
 }
 
-$("soundBtn").textContent = sound ? "🔊 Sound: On" : "🔇 Sound: Off";
-$("musicSettingsBtn").textContent = sound ? "Turn Sound Off" : "Turn Sound On";
+$("soundBtn").textContent =
+  sound ? "🔊 Sound Effects: On" : "🔇 Sound Effects: Off";
+
+$("musicSettingsBtn").textContent =
+  sound ? "Turn Sound Effects Off" : "Turn Sound Effects On";
 
 $("soundBtn").addEventListener("click",() => setSound(!sound));
 $("musicSettingsBtn").addEventListener("click",() => setSound(!sound));
 
-/* Browsers require interaction before starting audio after a reload. */
-
-function resumeRememberedMusic() {
-  if (!sound) return;
-
-  getAudio();
-  startMusic();
-
-  document.removeEventListener("pointerdown",resumeRememberedMusic);
-  document.removeEventListener("keydown",resumeRememberedMusic);
-}
-
-if (sound) {
-  document.addEventListener("pointerdown",resumeRememberedMusic);
-  document.addEventListener("keydown",resumeRememberedMusic);
-}
-
 /* SHOP */
+
+function getUpgradeCost(upgrade) {
+  if (upgrade.id === "cursor") {
+    return 15;
+  }
+
+  return Math.floor(
+    upgrade.price * Math.pow(1.15,counts[upgrade.id])
+  );
+}
 
 function buildShop(list,container) {
   container.innerHTML = "";
@@ -311,7 +233,7 @@ function buildShop(list,container) {
 function updateShop() {
   [...upgrades,...christmasUpgrades].forEach(upgrade => {
     const amount = counts[upgrade.id] || 0;
-    const cost = Math.floor(upgrade.price * Math.pow(1.15,amount));
+    const cost = getUpgradeCost(upgrade);
 
     upgrade.button.disabled = cookies < cost;
     upgrade.costElement.textContent = "🍪 " + format(cost) + " cookies";
@@ -335,7 +257,7 @@ function render() {
 }
 
 function buyUpgrade(upgrade) {
-  const cost = Math.floor(upgrade.price * Math.pow(1.15,counts[upgrade.id]));
+  const cost = getUpgradeCost(upgrade);
 
   if (cookies < cost) return;
 
@@ -378,16 +300,6 @@ $("cookie").addEventListener("keydown",event => {
 
 /* CURSOR RINGS */
 
-/*
-  Ring sizes grow as:
-  12, 18, 24, 30, 36, 42...
-
-  All cursors are assigned to a ring.
-  The rings are distributed from the cookie to the
-  outer edge of the stage. Cursor icons shrink as
-  needed to avoid piling on top of one another.
-*/
-
 let cursorElements = [];
 let lastCursorAmount = -1;
 
@@ -411,31 +323,19 @@ function getCursorRing(index) {
   };
 }
 
-function getTotalRings(amount) {
-  let total = 0;
-  let ring = 0;
-
-  while (total < amount) {
-    total += ringCapacity(ring);
-    ring++;
-  }
-
-  return ring;
-}
-
 function rebuildCursors() {
   cursorElements.forEach(element => element.remove());
   cursorElements = [];
 
   const amount = counts.cursor || 0;
-  const stage = $("cookieStage");
+  const layer = $("cursorLayer");
 
   for (let i = 0; i < amount; i++) {
     const cursor = document.createElement("div");
     cursor.className = "cursorSprite";
     cursor.textContent = "➤";
 
-    stage.appendChild(cursor);
+    layer.appendChild(cursor);
     cursorElements.push(cursor);
   }
 
@@ -459,20 +359,15 @@ function animateCursors() {
 
     const centerX = rect.width / 2;
     const centerY = rect.height / 2;
-    const size = Math.min(rect.width, rect.height);
+    const innerRadius = Math.min(rect.width,rect.height) * .30;
 
-    const innerRadius = size * .30;
-
-    // Every new row gets its own additional space.
+    // Fixed size and fixed spacing. New rings keep moving outward.
     const ringSpacing = 30;
     const cursorSize = 20;
-
     const time = performance.now() / 1000;
 
-    cursorElements.forEach((cursor, index) => {
+    cursorElements.forEach((cursor,index) => {
       const data = getCursorRing(index);
-
-      // Never compress the rings or shrink the cursors.
       const radius = innerRadius + data.ring * ringSpacing;
 
       const direction = data.ring % 2 === 0 ? 1 : -1;
@@ -485,7 +380,7 @@ function animateCursors() {
       const y = centerY + Math.sin(angle) * radius;
 
       const inwardAngle =
-        Math.atan2(centerY - y, centerX - x) * 180 / Math.PI;
+        Math.atan2(centerY-y,centerX-x) * 180 / Math.PI;
 
       cursor.style.left = x + "px";
       cursor.style.top = y + "px";
@@ -494,7 +389,7 @@ function animateCursors() {
       cursor.style.fontSize = cursorSize + "px";
 
       cursor.style.transform =
-        `translate(-50%, -50%) rotate(${inwardAngle}deg)`;
+        `translate(-50%,-50%) rotate(${inwardAngle}deg)`;
     });
   }
 
@@ -562,7 +457,6 @@ function spawnSnowflake() {
   flake.style.animationDuration = duration+"s";
 
   document.body.appendChild(flake);
-
   setTimeout(() => flake.remove(),duration*1000);
 }
 
@@ -637,11 +531,9 @@ function applySaveData(data) {
 function loadGame() {
   try {
     const raw = localStorage.getItem(SAVE_KEY);
-
     if (!raw) return;
 
-    const data = JSON.parse(raw);
-    applySaveData(data);
+    applySaveData(JSON.parse(raw));
   } catch (error) {
     console.error("Could not load save:",error);
     showToast("Couldn't load your save.");
@@ -662,9 +554,7 @@ $("settingsBtn").addEventListener("click",openSettings);
 $("closeSettings").addEventListener("click",closeSettings);
 
 $("settingsOverlay").addEventListener("click",event => {
-  if (event.target === $("settingsOverlay")) {
-    closeSettings();
-  }
+  if (event.target === $("settingsOverlay")) closeSettings();
 });
 
 document.addEventListener("keydown",event => {

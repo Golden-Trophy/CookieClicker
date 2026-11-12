@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -16,28 +17,28 @@
         <span>●</span><span>●</span><span>●</span><span>●</span>
         <span>●</span><span>●</span><span>●</span><span>●</span>
       </div>
-
       <div class="brand">
         <div class="brand-title">COOKIE CLICKER</div>
         <div class="brand-subtitle">A cozy little cookie bakery</div>
       </div>
-
-      <div class="header-decoration" aria-hidden="true">✦ ❄ ✦</div>
+      <div class="header-decoration">✦ ❄ ✦</div>
     </header>
 
     <main id="main">
       <section id="bakery">
-        <div class="bakery-decoration decoration-left" aria-hidden="true">❄</div>
-        <div class="bakery-decoration decoration-right" aria-hidden="true">✦</div>
+        <div class="bakery-decoration decoration-left">❄</div>
+        <div class="bakery-decoration decoration-right">✦</div>
 
         <div id="stats">
           <div class="stat-cookie" id="cookieCount">0 cookies</div>
-          <div class="stat-cps"><span>⚡</span> <span id="cps">0 cookies per second</span></div>
+          <div class="stat-cps">⚡ <span id="cps">0 cookies per second</span></div>
           <div class="stat-click">🍪 Per click: <span id="clickPower">1</span></div>
         </div>
 
         <div id="cookieStage">
           <div class="cookie-aura"></div>
+          <div id="cursorLayer"></div>
+
           <div id="cookie" role="button" tabindex="0" aria-label="Click the cookie">
             <div id="cookieHat">
               <div class="hat-point"></div>
@@ -86,9 +87,7 @@
           <div class="shop-description">Build your cookie empire, one click at a time.</div>
         </div>
 
-        <div class="section-title">
-          <span>🍪</span> Bakery Upgrades
-        </div>
+        <div class="section-title"><span>🍪</span> Bakery Upgrades</div>
         <div id="normalShop"></div>
 
         <div class="seasonal-heading">
@@ -106,7 +105,7 @@
     <footer id="bottomBar">
       <div class="footer-brand">🍪 COOKIE CLICKER</div>
       <div class="footer-actions">
-        <button class="footer-button" id="soundBtn">🔊 Sound: On</button>
+        <button class="footer-button" id="soundBtn">🔇 Sound Effects: Off</button>
         <button class="footer-button settings-button" id="settingsBtn">⚙ Settings</button>
       </div>
     </footer>
@@ -123,9 +122,9 @@
       </div>
 
       <section class="settings-section">
-        <h3>🔊 Sound & Music</h3>
-        <p>Enjoy the bakery soundtrack and little sound effects.</p>
-        <button class="settings-action" id="musicSettingsBtn">Turn Sound Off</button>
+        <h3>🔊 Sound Effects</h3>
+        <p>Toggle clicking and purchase sounds. Background music is disabled.</p>
+        <button class="settings-action" id="musicSettingsBtn">Turn Sound Effects On</button>
       </section>
 
       <section class="settings-section">
