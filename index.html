@@ -11,8 +11,7 @@ html,body{margin:0;width:100%;height:100%;overflow:hidden}
 body{
   font-family:Georgia,serif;
   color:#4a2818;
-  background:
-    radial-gradient(ellipse at top,#fff9e9 0%,#d8e9d9 45%,#8cb69a 100%);
+  background:radial-gradient(ellipse at top,#fff9e9 0%,#d8e9d9 45%,#8cb69a 100%);
 }
 button{font-family:inherit;cursor:pointer}
 #game{height:100dvh;display:flex;flex-direction:column}
@@ -62,17 +61,12 @@ header{
 .chip:nth-child(6){top:75%;left:35%;transform:rotate(20deg)}
 .chip:nth-child(7){top:13%;left:48%;transform:rotate(-10deg)}
 .chip:nth-child(8){top:48%;left:76%;transform:rotate(30deg)}
-
-/* Animated cursors */
 .cursorSprite{
-  position:absolute;z-index:4;
-  width:30px;height:30px;
+  position:absolute;z-index:4;width:30px;height:30px;
   display:flex;align-items:center;justify-content:center;
   font-family:Arial,sans-serif;font-size:27px;line-height:1;
-  color:#fff0c5;
-  text-shadow:1px 2px 2px #48230f,0 0 5px #fff0c4;
-  pointer-events:none;
-  transform-origin:center;
+  color:#fff0c5;text-shadow:1px 2px 2px #48230f,0 0 5px #fff0c4;
+  pointer-events:none;transform-origin:center;
 }
 #cursorCount{
   position:absolute;bottom:1%;right:1%;z-index:5;
@@ -86,7 +80,6 @@ header{
   animation:goldPulse .8s infinite alternate;
 }
 @keyframes goldPulse{to{transform:scale(1.25)}}
-
 #shop{
   min-height:0;overflow-y:auto;
   background:linear-gradient(180deg,#f3e8c9,#e5c995);
@@ -95,8 +88,7 @@ header{
 }
 .shopHeader{
   text-align:center;font-size:23px;font-weight:bold;padding:9px;
-  color:#fff5d8;
-  background:linear-gradient(90deg,#17613a,#23804b,#17613a);
+  color:#fff5d8;background:linear-gradient(90deg,#17613a,#23804b,#17613a);
   border:2px solid #d7b65c;border-radius:9px;
   text-shadow:1px 2px #123c27;margin-bottom:10px;
 }
@@ -104,13 +96,11 @@ header{
   margin:18px 0 8px;padding:9px 10px;border-radius:7px;
   font-size:17px;font-weight:bold;color:#fff4dc;
   background:linear-gradient(90deg,#17613a,#27804b);
-  border:1px solid #d5b65e;
-  box-shadow:0 2px 4px #6b3c2044;
+  border:1px solid #d5b65e;box-shadow:0 2px 4px #6b3c2044;
 }
 .sectionTitle.christmas{
   background:linear-gradient(90deg,#9e1d2b,#d13b42,#17633b);
-  border:2px solid #e2bb57;
-  text-shadow:1px 1px #4b1119;
+  border:2px solid #e2bb57;text-shadow:1px 1px #4b1119;
 }
 .upgrade{
   display:flex;align-items:center;gap:10px;min-height:68px;
@@ -158,9 +148,48 @@ header{
 #toast{
   position:fixed;bottom:65px;left:50%;transform:translateX(-50%);
   background:#17613a;color:#fff3d8;border:2px solid #d5ad66;
-  border-radius:9px;padding:10px 17px;z-index:20;
+  border-radius:9px;padding:10px 17px;z-index:40;
   opacity:0;transition:opacity .2s;pointer-events:none;
 }
+
+/* Settings menu */
+#settingsOverlay{
+  display:none;position:fixed;inset:0;z-index:30;
+  background:#160d0dcc;align-items:center;justify-content:center;
+  padding:15px;
+}
+#settingsOverlay.open{display:flex}
+#settingsPanel{
+  width:min(440px,100%);max-height:90vh;overflow-y:auto;
+  background:linear-gradient(145deg,#fff5df,#e7d0a4);
+  border:4px solid #d5ad50;border-radius:15px;
+  box-shadow:0 12px 45px #0008;padding:18px;
+}
+#settingsHeader{
+  display:flex;align-items:center;justify-content:space-between;
+  color:#fff5d8;background:linear-gradient(90deg,#791b27,#17613a);
+  border:2px solid #d5ad50;border-radius:9px;padding:12px;
+  margin-bottom:15px;font-size:22px;font-weight:bold;
+}
+#closeSettings{
+  border:1px solid #e8c76e;background:#a52c36;color:white;
+  border-radius:6px;padding:5px 10px;font-size:18px;
+}
+.settingsSection{
+  background:#fff9e9;border:1px solid #c89d5c;
+  border-radius:9px;padding:12px;margin-top:12px;
+}
+.settingsSection h3{margin:0 0 9px;color:#17613a}
+.settingsAction{
+  display:block;width:100%;margin-top:8px;padding:11px;
+  border:2px solid #b8864c;border-radius:7px;
+  background:linear-gradient(90deg,#17613a,#27804b);
+  color:white;font-size:14px;font-weight:bold;
+}
+.settingsAction:hover{filter:brightness(1.12)}
+.settingsAction.danger{background:linear-gradient(90deg,#941d2b,#c13c43)}
+.settingsNote{font-size:12px;color:#775638;line-height:1.5}
+#saveStatus{font-size:12px;color:#26713f;margin-top:8px}
 @media(max-width:700px){
   #main{grid-template-columns:1fr 270px}
   #cookieStage{width:min(55vw,45vh);height:min(55vw,45vh)}
@@ -175,6 +204,8 @@ header{
   .upgradeDesc{font-size:10px}
   .upgradeCost{font-size:10px}
   #cookieStage{min-width:190px;min-height:190px}
+  #bottomBar{gap:6px;font-size:11px}
+  #bottomBar .smallButton{padding:6px 8px}
 }
 </style>
 </head>
@@ -211,10 +242,47 @@ header{
 <footer id="bottomBar">
   <span>🎄 Cookie Bakery</span>
   <button class="smallButton" id="soundBtn">🔊 Sound: Off</button>
-  <button class="smallButton" id="saveBtn">💾 Save</button>
-  <button class="smallButton" id="resetBtn">↻ Reset</button>
+  <button class="smallButton" id="settingsBtn">⚙ Settings</button>
 </footer>
 </div>
+
+<div id="settingsOverlay">
+  <div id="settingsPanel">
+    <div id="settingsHeader">
+      <span>⚙ Bakery Settings</span>
+      <button id="closeSettings" title="Close">✕</button>
+    </div>
+
+    <div class="settingsSection">
+      <h3>💾 Save Game</h3>
+      <div class="settingsNote">
+        Your game automatically saves every 5 seconds and when you leave the page.
+      </div>
+      <button class="settingsAction" id="saveBtn">💾 Save Now</button>
+      <button class="settingsAction" id="downloadBtn">⬇ Download Save File</button>
+      <button class="settingsAction" id="uploadBtn">⬆ Upload Save File</button>
+      <input id="uploadInput" type="file" accept=".json,application/json" hidden>
+      <div id="saveStatus">Autosave is enabled.</div>
+    </div>
+
+    <div class="settingsSection">
+      <h3>🔄 Game Data</h3>
+      <div class="settingsNote">
+        Resetting will erase your current bakery progress. Export a save file first if you want a backup.
+      </div>
+      <button class="settingsAction danger" id="resetBtn">↻ Reset Game</button>
+    </div>
+
+    <div class="settingsSection">
+      <h3>🎄 About</h3>
+      <div class="settingsNote">
+        Cookie Clicker Christmas Edition<br>
+        Your progress is saved in this browser.
+      </div>
+    </div>
+  </div>
+</div>
+
 <div id="toast"></div>
 
 <script>
@@ -241,6 +309,7 @@ const upgrades=[
 {id:"chance",name:"Chance Maker",icon:"🎲",desc:"Creates cookies through luck.",price:26000000000000000,cps:21000000000},
 {id:"fractal",name:"Fractal Engine",icon:"🔷",desc:"Cookies create more cookies.",price:310000000000000000,cps:150000000000}
 ];
+
 const christmasUpgrades=[
 {id:"tree",name:"Christmas Tree",icon:"🎄",desc:"A festive cookie tree.",price:500,cps:5},
 {id:"snowman",name:"Snowman",icon:"☃️",desc:"A chilly cookie helper.",price:5000,cps:35},
@@ -250,6 +319,7 @@ const christmasUpgrades=[
 {id:"elf",name:"Elf Helpers",icon:"🧝",desc:"A team of cookie-making elves.",price:900000000,cps:5000000},
 {id:"northpole",name:"North Pole Bakery",icon:"❄️",desc:"The ultimate Christmas bakery.",price:25000000000,cps:180000000}
 ];
+
 [...upgrades,...christmasUpgrades].forEach(u=>counts[u.id]=0);
 
 function format(n){
@@ -304,11 +374,10 @@ $("cookie").addEventListener("click",()=>{
  cookies+=clickPower;totalCookies+=clickPower;
  $("cookie").style.transform="scale(.94)";
  setTimeout(()=>$("cookie").style.transform="",80);
- render();
+ render();saveGame();
 });
 
-/* Orbit animation: cursors move around a circular path.
-   Each arrow rotates to point from its position toward the cookie. */
+/* Animated cursors orbit around the cookie and point toward its center. */
 function animateCursors(){
  const stage=$("cookieStage");
  stage.querySelectorAll(".cursorSprite").forEach(el=>el.remove());
@@ -327,7 +396,6 @@ function animateCursors(){
   cursor.textContent="➤";
   cursor.style.left=x+"px";
   cursor.style.top=y+"px";
-  // Arrow's default tip points right. Rotate it toward the cookie center.
   const towardCenter=Math.atan2(cy-y,cx-x)*180/Math.PI;
   cursor.style.transform=`translate(-50%,-50%) rotate(${towardCenter}deg)`;
   stage.appendChild(cursor);
@@ -338,7 +406,6 @@ function animateCursors(){
  requestAnimationFrame(animateCursors);
 }
 requestAnimationFrame(animateCursors);
-window.addEventListener("resize",()=>{});
 
 function spawnGolden(){
  const btn=$("goldenCookie");
@@ -355,6 +422,7 @@ $("goldenCookie").addEventListener("click",()=>{
  showToast("🎁 Bonus! +"+format(reward)+" cookies!");
  render();saveGame();
 });
+
 function snow(){
  const f=document.createElement("div");
  f.className="snowflake";f.textContent=["❄","❅","❆"][Math.floor(Math.random()*3)];
@@ -364,32 +432,135 @@ function snow(){
  document.body.appendChild(f);setTimeout(()=>f.remove(),d*1000);
 }
 setInterval(snow,350);
+
+/* Automatic saving and save-file import/export */
+const SAVE_KEY="cookieClickerSave";
+
+function getSaveData(){
+ return {
+  version:1,
+  savedAt:new Date().toISOString(),
+  cookies,totalCookies,clickPower,
+  counts:{...counts}
+ };
+}
 function saveGame(){
- localStorage.setItem("cookieClickerSave",JSON.stringify({cookies,totalCookies,clickPower,counts}));
+ try{
+  localStorage.setItem(SAVE_KEY,JSON.stringify(getSaveData()));
+  $("saveStatus").textContent="Last saved: "+new Date().toLocaleTimeString();
+  return true;
+ }catch(e){
+  showToast("Couldn't save: browser storage may be full.");
+  return false;
+ }
+}
+function applySaveData(d){
+ if(!d||typeof d!=="object"||
+    !Number.isFinite(Number(d.cookies))||Number(d.cookies)<0||
+    !Number.isFinite(Number(d.totalCookies))||Number(d.totalCookies)<0||
+    !Number.isFinite(Number(d.clickPower))||Number(d.clickPower)<1||
+    !d.counts||typeof d.counts!=="object"){
+  throw new Error("That file isn't a valid Cookie Clicker save.");
+ }
+ const nextCounts={};
+ Object.keys(counts).forEach(id=>{
+  const value=Number(d.counts[id]??0);
+  if(!Number.isFinite(value)||value<0)throw new Error("The save has invalid upgrade counts.");
+  nextCounts[id]=Math.floor(value);
+ });
+ cookies=Number(d.cookies);
+ totalCookies=Number(d.totalCookies);
+ clickPower=Number(d.clickPower);
+ Object.assign(counts,nextCounts);
+ render();
+ saveGame();
 }
 function loadGame(){
  try{
-  const d=JSON.parse(localStorage.getItem("cookieClickerSave"));
-  if(!d)return;
-  cookies=d.cookies||0;totalCookies=d.totalCookies||0;clickPower=d.clickPower||1;
-  if(d.counts)Object.keys(counts).forEach(id=>counts[id]=d.counts[id]||0);
- }catch(e){}
+  const raw=localStorage.getItem(SAVE_KEY);
+  if(raw)applySaveData(JSON.parse(raw));
+ }catch(e){
+  console.warn("Could not load Cookie Clicker save:",e);
+  showToast("Couldn't load saved game. Starting fresh.");
+ }
 }
-$("saveBtn").addEventListener("click",()=>{saveGame();showToast("Game saved!")});
+
+/* Settings menu controls */
+function openSettings(){
+ $("settingsOverlay").classList.add("open");
+}
+function closeSettings(){
+ $("settingsOverlay").classList.remove("open");
+}
+$("settingsBtn").addEventListener("click",openSettings);
+$("closeSettings").addEventListener("click",closeSettings);
+$("settingsOverlay").addEventListener("click",e=>{
+ if(e.target===$("settingsOverlay"))closeSettings();
+});
+document.addEventListener("keydown",e=>{
+ if(e.key==="Escape")closeSettings();
+});
+
+$("saveBtn").addEventListener("click",()=>{
+ if(saveGame())showToast("Game saved!");
+});
+$("downloadBtn").addEventListener("click",()=>{
+ const blob=new Blob([JSON.stringify(getSaveData(),null,2)],{type:"application/json"});
+ const url=URL.createObjectURL(blob);
+ const a=document.createElement("a");
+ a.href=url;
+ a.download="cookie-clicker-save.json";
+ document.body.appendChild(a);
+ a.click();
+ a.remove();
+ setTimeout(()=>URL.revokeObjectURL(url),1000);
+ showToast("Save file downloaded!");
+});
+$("uploadBtn").addEventListener("click",()=>$("uploadInput").click());
+$("uploadInput").addEventListener("change",async event=>{
+ const file=event.target.files[0];
+ if(!file)return;
+ try{
+  const data=JSON.parse(await file.text());
+  if(!confirm("Import this save and replace your current bakery progress?"))return;
+  applySaveData(data);
+  showToast("Save imported successfully!");
+ }catch(e){
+  showToast(e.message||"Couldn't import that save file.");
+ }finally{
+  event.target.value="";
+ }
+});
 $("resetBtn").addEventListener("click",()=>{
  if(!confirm("Are you sure you want to reset your bakery?"))return;
  cookies=0;totalCookies=0;clickPower=1;
  Object.keys(counts).forEach(id=>counts[id]=0);
- localStorage.removeItem("cookieClickerSave");render();showToast("Bakery reset!");
+ localStorage.removeItem(SAVE_KEY);
+ render();saveGame();
+ showToast("Bakery reset!");
+ closeSettings();
 });
+
 $("soundBtn").addEventListener("click",()=>{
- sound=!sound;$("soundBtn").textContent=sound?"🔊 Sound: On":"🔊 Sound: Off";
+ sound=!sound;
+ $("soundBtn").textContent=sound?"🔊 Sound: On":"🔊 Sound: Off";
 });
-loadGame();render();
+
+loadGame();
+render();
+
+document.addEventListener("visibilitychange",()=>{
+ if(document.visibilityState==="hidden")saveGame();
+});
+window.addEventListener("pagehide",saveGame);
+
 setInterval(()=>{
- const gain=getCps()/10;cookies+=gain;totalCookies+=gain;render();
+ const gain=getCps()/10;
+ cookies+=gain;totalCookies+=gain;render();
 },100);
+
 setInterval(saveGame,5000);
+
 setInterval(()=>{
  if(Math.random()<.65&&$("goldenCookie").style.display!=="block")spawnGolden();
 },35000);
