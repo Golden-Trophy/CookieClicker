@@ -5,54 +5,203 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Cookie Clicker</title>
+
 <style>
 *{box-sizing:border-box}
-html,body{margin:0;width:100%;height:100%;overflow:hidden}
+
+:root{
+  --cream:#fff5e5;
+  --paper:#f3e4cc;
+  --wood:#9b6745;
+  --darkwood:#593a2b;
+  --brown:#70462e;
+  --green:#617b5b;
+  --sage:#dce5d2;
+  --gold:#d6ad69;
+}
+
+html,body{
+  margin:0;
+  width:100%;
+  height:100%;
+  overflow:hidden;
+}
+
 body{
   font-family:Georgia,serif;
-  color:#4a2818;
-  background:radial-gradient(ellipse at top,#fff9e9 0%,#d8e9d9 45%,#8cb69a 100%);
-}
-button{font-family:inherit;cursor:pointer}
-#game{height:100dvh;display:flex;flex-direction:column}
-header{
-  height:66px;flex-shrink:0;
-  display:flex;align-items:center;justify-content:center;gap:12px;
-  color:#fff5d8;
-  background:linear-gradient(90deg,#791b27,#b52b37,#791b27);
-  border-bottom:4px solid #e3bd55;
-  box-shadow:0 3px 12px #3e1b1b88;
-  font-size:27px;font-weight:bold;letter-spacing:1px;
-  text-shadow:2px 2px #481014;
-}
-#main{flex:1;min-height:0;display:grid;grid-template-columns:1fr 350px}
-#bakery{
-  min-width:0;position:relative;
-  display:flex;flex-direction:column;align-items:center;justify-content:center;
-  padding:12px;
+  color:var(--darkwood);
   background:
-    radial-gradient(circle at center,#fff4d7aa,#d9e7c5aa),
-    repeating-linear-gradient(45deg,#ffffff0a 0 10px,#477b3d0a 10px 20px);
+    radial-gradient(ellipse at top,#fff9ed,#e8dfcb 65%,#c5b69c);
 }
-#stats{text-align:center;margin-bottom:8px;z-index:2}
-#cookieCount{font-size:clamp(27px,4vw,43px);font-weight:bold;color:#713b1e;text-shadow:1px 2px #fff3d1}
-#cps{font-size:17px;color:#426b3d;margin-top:4px}
-#clickPower{font-size:13px;color:#90643d;margin-top:3px}
+
+button{font-family:inherit;cursor:pointer}
+
+#game{
+  height:100dvh;
+  display:flex;
+  flex-direction:column;
+}
+
+/* Header */
+
+header{
+  height:72px;
+  flex-shrink:0;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  color:#fff4df;
+  background:linear-gradient(90deg,#684735,#876047,#684735);
+  border-bottom:4px solid #d5b47b;
+  box-shadow:0 3px 12px #39261944;
+  text-shadow:1px 2px #392619;
+  position:relative;
+  z-index:2;
+}
+
+#gameTitle{
+  font-size:27px;
+  font-weight:bold;
+  letter-spacing:2px;
+}
+
+#subtitle{
+  font-size:11px;
+  letter-spacing:2px;
+  margin-top:3px;
+  color:#f2dfbd;
+}
+
+/* Main layout */
+
+#main{
+  flex:1;
+  min-height:0;
+  display:grid;
+  grid-template-columns:1fr 370px;
+}
+
+/* Bakery */
+
+#bakery{
+  min-width:0;
+  position:relative;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  padding:15px;
+  overflow:hidden;
+  background:
+    radial-gradient(ellipse at center,#fff9e9dd,#e6e5d3cc 70%),
+    repeating-linear-gradient(45deg,#ffffff0b 0 12px,#735a3c08 12px 24px);
+}
+
+/* Decorative bakery details */
+
+#bakery:before{
+  content:"";
+  position:absolute;
+  top:18px;
+  left:22px;
+  width:95px;
+  height:95px;
+  opacity:.35;
+  background:
+    radial-gradient(ellipse at 50% 20%,#68835d 0 10%,transparent 11%),
+    radial-gradient(ellipse at 25% 45%,#68835d 0 12%,transparent 13%),
+    radial-gradient(ellipse at 75% 45%,#68835d 0 12%,transparent 13%),
+    linear-gradient(#8b6346,#8b6346);
+  border-radius:50%;
+  pointer-events:none;
+}
+
+#bakery:after{
+  content:"☕";
+  position:absolute;
+  right:25px;
+  top:22px;
+  font-size:45px;
+  opacity:.25;
+  transform:rotate(10deg);
+  pointer-events:none;
+}
+
+#stats{
+  text-align:center;
+  margin-bottom:12px;
+  z-index:2;
+  background:#fff8e8a8;
+  border:1px solid #c8ae83;
+  border-radius:14px;
+  padding:10px 22px;
+  box-shadow:0 4px 12px #69472b18;
+}
+
+#cookieCount{
+  font-size:clamp(27px,4vw,43px);
+  font-weight:bold;
+  color:#754a2e;
+  text-shadow:1px 2px #fff3d1;
+}
+
+#cps{
+  font-size:16px;
+  color:#627a55;
+  margin-top:4px;
+}
+
+#clickPower{
+  font-size:13px;
+  color:#98734c;
+  margin-top:3px;
+}
+
 #cookieStage{
   width:min(66vw,58vh,540px);
   height:min(66vw,58vh,540px);
-  min-width:250px;min-height:250px;
-  position:relative;display:flex;align-items:center;justify-content:center;
+  min-width:250px;
+  min-height:250px;
+  position:relative;
+  display:flex;
+  align-items:center;
+  justify-content:center;
   isolation:isolate;
 }
+
 #cookie{
-  width:47%;height:47%;border-radius:50%;
-  border:8px solid #8d4c22;
-  background:radial-gradient(circle at 30% 25%,#d99a4d,#a85b24 65%,#713718);
-  box-shadow:inset -12px -14px 18px #57270d66,inset 8px 8px 14px #ffcf7a88,0 12px 24px #512b1d66;
-  position:relative;z-index:3;transition:transform .08s;user-select:none;
+  width:47%;
+  height:47%;
+  border-radius:50%;
+  border:8px solid #88512b;
+  background:
+    radial-gradient(circle at 30% 25%,#e9b86f,#c47a39 65%,#8b4a24);
+  box-shadow:
+    inset -12px -14px 18px #57270d55,
+    inset 8px 8px 14px #ffcf7a88,
+    0 12px 24px #512b1d55,
+    0 0 0 9px #d7b98b66;
+  position:relative;
+  z-index:3;
+  transition:transform .08s;
+  user-select:none;
+  cursor:pointer;
 }
-.chip{position:absolute;width:9%;height:12%;border-radius:45%;background:#48200e;box-shadow:inset 2px 2px 2px #a66b3a}
+
+#cookie:hover{
+  filter:brightness(1.06);
+}
+
+.chip{
+  position:absolute;
+  width:9%;
+  height:12%;
+  border-radius:45%;
+  background:#48200e;
+  box-shadow:inset 2px 2px 2px #a66b3a;
+}
+
 .chip:nth-child(1){top:18%;left:27%;transform:rotate(25deg)}
 .chip:nth-child(2){top:25%;left:65%;transform:rotate(-25deg)}
 .chip:nth-child(3){top:52%;left:18%;transform:rotate(15deg)}
@@ -61,145 +210,347 @@ header{
 .chip:nth-child(6){top:75%;left:35%;transform:rotate(20deg)}
 .chip:nth-child(7){top:13%;left:48%;transform:rotate(-10deg)}
 .chip:nth-child(8){top:48%;left:76%;transform:rotate(30deg)}
+
 .cursorSprite{
-  position:absolute;z-index:4;width:30px;height:30px;
-  display:flex;align-items:center;justify-content:center;
-  font-family:Arial,sans-serif;font-size:27px;line-height:1;
-  color:#fff0c5;text-shadow:1px 2px 2px #48230f,0 0 5px #fff0c4;
-  pointer-events:none;transform-origin:center;
-}
-#cursorCount{
-  position:absolute;bottom:1%;right:1%;z-index:5;
-  background:#17633b;color:white;border:2px solid #e5c17a;
-  border-radius:20px;padding:4px 9px;font-size:12px;display:none;
-}
-#clickHint{font-size:14px;color:#4b7443;margin-top:10px}
-#goldenCookie{
-  display:none;position:absolute;z-index:8;font-size:42px;
-  border:0;background:none;filter:drop-shadow(0 0 10px gold);
-  animation:goldPulse .8s infinite alternate;
-}
-@keyframes goldPulse{to{transform:scale(1.25)}}
-#shop{
-  min-height:0;overflow-y:auto;
-  background:linear-gradient(180deg,#f3e8c9,#e5c995);
-  border-left:5px solid #d5ad50;padding:12px;
-  scrollbar-color:#9d6635 #e7c99a;
-}
-.shopHeader{
-  text-align:center;font-size:23px;font-weight:bold;padding:9px;
-  color:#fff5d8;background:linear-gradient(90deg,#17613a,#23804b,#17613a);
-  border:2px solid #d7b65c;border-radius:9px;
-  text-shadow:1px 2px #123c27;margin-bottom:10px;
-}
-.sectionTitle{
-  margin:18px 0 8px;padding:9px 10px;border-radius:7px;
-  font-size:17px;font-weight:bold;color:#fff4dc;
-  background:linear-gradient(90deg,#17613a,#27804b);
-  border:1px solid #d5b65e;box-shadow:0 2px 4px #6b3c2044;
-}
-.sectionTitle.christmas{
-  background:linear-gradient(90deg,#9e1d2b,#d13b42,#17633b);
-  border:2px solid #e2bb57;text-shadow:1px 1px #4b1119;
-}
-.upgrade{
-  display:flex;align-items:center;gap:10px;min-height:68px;
-  margin-bottom:7px;padding:8px;
-  border:2px solid #b8864c;border-radius:9px;
-  background:linear-gradient(110deg,#fff1d5,#ecd0a1);
-  box-shadow:0 2px 4px #6e421c33;transition:.12s;
-}
-.upgrade:hover{transform:translateX(-3px);filter:brightness(1.04)}
-.upgrade:disabled{opacity:.48;filter:grayscale(.4);cursor:not-allowed}
-.upgradeIcon{
-  width:43px;height:43px;flex-shrink:0;display:grid;place-items:center;
-  border-radius:8px;background:#d8b17b;font-size:25px;
-}
-.upgradeInfo{flex:1;min-width:0}
-.upgradeName{font-weight:bold;font-size:15px}
-.upgradeDesc{font-size:11px;color:#805b38;margin-top:3px}
-.upgradeCost{font-size:12px;color:#36743a;font-weight:bold;margin-top:4px}
-.upgradeCount{font-size:17px;font-weight:bold;color:#79421e;min-width:20px;text-align:center}
-.christmasUpgrade{
-  border:2px solid #b82c3a;
-  background:linear-gradient(110deg,#fff0df,#d8e9ce);
-}
-.christmasUpgrade .upgradeIcon{
-  background:linear-gradient(135deg,#c93b42 0%,#c93b42 48%,#26824b 52%,#26824b 100%);
-  border:1px solid #e0b84f;
-}
-#bottomBar{
-  flex-shrink:0;min-height:43px;
-  background:linear-gradient(90deg,#791b27,#17613a,#791b27);
-  color:#f8e5bf;display:flex;justify-content:center;align-items:center;
-  gap:10px;padding:5px;font-family:Arial,sans-serif;font-size:12px;
-  border-top:3px solid #d7ad50;
-}
-.smallButton{
-  border:1px solid #e0bd64;
-  background:#a52c36;color:white;padding:6px 11px;border-radius:5px;
-}
-.smallButton:hover{background:#c13c43}
-.snowflake{
-  position:fixed;top:-15px;z-index:10;pointer-events:none;color:white;
-  text-shadow:0 0 5px #fff;animation:fall linear forwards;
-}
-@keyframes fall{to{transform:translateY(110vh) rotate(360deg)}}
-#toast{
-  position:fixed;bottom:65px;left:50%;transform:translateX(-50%);
-  background:#17613a;color:#fff3d8;border:2px solid #d5ad66;
-  border-radius:9px;padding:10px 17px;z-index:40;
-  opacity:0;transition:opacity .2s;pointer-events:none;
+  position:absolute;
+  z-index:4;
+  width:30px;
+  height:30px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-family:Arial,sans-serif;
+  font-size:27px;
+  color:#fff0c5;
+  text-shadow:1px 2px 2px #48230f,0 0 5px #fff0c4;
+  pointer-events:none;
+  transform-origin:center;
 }
 
-/* Settings menu */
+#cursorCount{
+  position:absolute;
+  bottom:1%;
+  right:1%;
+  z-index:5;
+  background:#617b5b;
+  color:white;
+  border:2px solid #d5b47b;
+  border-radius:20px;
+  padding:4px 9px;
+  font-size:12px;
+  display:none;
+}
+
+#clickHint{
+  font-size:14px;
+  color:#71815e;
+  margin-top:12px;
+  z-index:2;
+}
+
+#goldenCookie{
+  display:none;
+  position:absolute;
+  z-index:8;
+  font-size:42px;
+  border:0;
+  background:none;
+  filter:drop-shadow(0 0 10px #e6b64f);
+  animation:goldPulse .8s infinite alternate;
+}
+
+@keyframes goldPulse{
+  to{transform:scale(1.25)}
+}
+
+/* Shop */
+
+#shop{
+  min-height:0;
+  overflow-y:auto;
+  background:
+    linear-gradient(180deg,#f6ead7,#e8d3b3);
+  border-left:5px solid #b58a5e;
+  padding:13px;
+  scrollbar-color:#a17a54 #ead9bd;
+}
+
+.shopHeader{
+  text-align:center;
+  font-size:23px;
+  font-weight:bold;
+  padding:12px;
+  color:#fff5e3;
+  background:linear-gradient(110deg,#617653,#81956b,#617653);
+  border:2px solid #c8aa76;
+  border-radius:12px;
+  text-shadow:1px 2px #34472d;
+  margin-bottom:12px;
+  box-shadow:0 3px 7px #60452b22;
+}
+
+.shopSub{
+  text-align:center;
+  font-size:11px;
+  color:#96734e;
+  margin:-5px 0 12px;
+}
+
+.sectionTitle{
+  margin:17px 0 9px;
+  padding:10px;
+  border-radius:8px;
+  font-size:16px;
+  font-weight:bold;
+  color:#fff5e3;
+  background:linear-gradient(90deg,#71835f,#899b74);
+  border:1px solid #c2a577;
+  box-shadow:0 2px 4px #6b3c2022;
+}
+
+.sectionTitle.special{
+  background:linear-gradient(90deg,#9a7050,#b58b65);
+}
+
+/* Upgrade buttons: no transform on hover, so they never jump */
+
+.upgrade{
+  display:flex;
+  align-items:center;
+  gap:11px;
+  width:100%;
+  min-height:76px;
+  margin-bottom:9px;
+  padding:10px;
+  text-align:left;
+  border:2px solid #c4a174;
+  border-radius:11px;
+  background:linear-gradient(110deg,#fff7e9,#f0dfc3);
+  box-shadow:0 3px 6px #6e421c22;
+  transition:background .15s,box-shadow .15s,border-color .15s;
+  position:relative;
+}
+
+.upgrade:hover:not(:disabled){
+  background:linear-gradient(110deg,#fffdf4,#f6e7cd);
+  border-color:#9d7951;
+  box-shadow:0 4px 11px #6e421c35;
+}
+
+.upgrade:active:not(:disabled){
+  background:#ead6b6;
+}
+
+.upgrade:disabled{
+  opacity:.52;
+  cursor:not-allowed;
+}
+
+.upgradeIcon{
+  width:46px;
+  height:46px;
+  flex-shrink:0;
+  display:grid;
+  place-items:center;
+  border-radius:10px;
+  background:#e5d1ae;
+  font-size:25px;
+  border:1px solid #c7a779;
+}
+
+.upgradeInfo{
+  flex:1;
+  min-width:0;
+}
+
+.upgradeName{
+  font-weight:bold;
+  font-size:15px;
+  color:#65432d;
+}
+
+.upgradeDesc{
+  font-size:11px;
+  color:#927253;
+  margin-top:4px;
+}
+
+.upgradeCost{
+  font-size:12px;
+  color:#527449;
+  font-weight:bold;
+  margin-top:5px;
+}
+
+.upgradeCount{
+  font-size:17px;
+  font-weight:bold;
+  color:#805536;
+  min-width:24px;
+  text-align:center;
+}
+
+/* Bottom bar */
+
+#bottomBar{
+  flex-shrink:0;
+  min-height:45px;
+  background:linear-gradient(90deg,#684735,#7e6047,#684735);
+  color:#f8e5bf;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  gap:12px;
+  padding:5px;
+  font-family:Arial,sans-serif;
+  font-size:12px;
+  border-top:3px solid #c6a16d;
+}
+
+.smallButton{
+  border:1px solid #d7b77e;
+  background:#71845e;
+  color:white;
+  padding:7px 12px;
+  border-radius:7px;
+  transition:background .15s;
+}
+
+.smallButton:hover{background:#899b73}
+
+/* Snow/sparkles */
+
+.snowflake{
+  position:fixed;
+  top:-15px;
+  z-index:10;
+  pointer-events:none;
+  color:#fff;
+  text-shadow:0 0 5px #fff;
+  animation:fall linear forwards;
+}
+
+@keyframes fall{
+  to{transform:translateY(110vh) rotate(360deg)}
+}
+
+#toast{
+  position:fixed;
+  bottom:65px;
+  left:50%;
+  transform:translateX(-50%);
+  background:#617b55;
+  color:#fff8e8;
+  border:2px solid #d5b47b;
+  border-radius:9px;
+  padding:10px 17px;
+  z-index:40;
+  opacity:0;
+  transition:opacity .2s;
+  pointer-events:none;
+}
+
+/* Settings */
+
 #settingsOverlay{
-  display:none;position:fixed;inset:0;z-index:30;
-  background:#160d0dcc;align-items:center;justify-content:center;
+  display:none;
+  position:fixed;
+  inset:0;
+  z-index:30;
+  background:#24190fcc;
+  align-items:center;
+  justify-content:center;
   padding:15px;
 }
+
 #settingsOverlay.open{display:flex}
+
 #settingsPanel{
-  width:min(440px,100%);max-height:90vh;overflow-y:auto;
-  background:linear-gradient(145deg,#fff5df,#e7d0a4);
-  border:4px solid #d5ad50;border-radius:15px;
-  box-shadow:0 12px 45px #0008;padding:18px;
+  width:min(440px,100%);
+  max-height:90vh;
+  overflow-y:auto;
+  background:linear-gradient(145deg,#fff5e5,#e7d2b2);
+  border:4px solid #c6a16d;
+  border-radius:15px;
+  box-shadow:0 12px 45px #0008;
+  padding:18px;
 }
+
 #settingsHeader{
-  display:flex;align-items:center;justify-content:space-between;
-  color:#fff5d8;background:linear-gradient(90deg,#791b27,#17613a);
-  border:2px solid #d5ad50;border-radius:9px;padding:12px;
-  margin-bottom:15px;font-size:22px;font-weight:bold;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  color:#fff5e3;
+  background:linear-gradient(90deg,#684735,#71845e);
+  border:2px solid #c6a16d;
+  border-radius:9px;
+  padding:12px;
+  margin-bottom:15px;
+  font-size:22px;
+  font-weight:bold;
 }
+
 #closeSettings{
-  border:1px solid #e8c76e;background:#a52c36;color:white;
-  border-radius:6px;padding:5px 10px;font-size:18px;
+  border:1px solid #e8c76e;
+  background:#8d6247;
+  color:white;
+  border-radius:6px;
+  padding:5px 10px;
+  font-size:18px;
 }
+
 .settingsSection{
-  background:#fff9e9;border:1px solid #c89d5c;
-  border-radius:9px;padding:12px;margin-top:12px;
+  background:#fff9ed;
+  border:1px solid #c8a777;
+  border-radius:9px;
+  padding:12px;
+  margin-top:12px;
 }
-.settingsSection h3{margin:0 0 9px;color:#17613a}
+
+.settingsSection h3{
+  margin:0 0 9px;
+  color:#617b55;
+}
+
 .settingsAction{
-  display:block;width:100%;margin-top:8px;padding:11px;
-  border:2px solid #b8864c;border-radius:7px;
-  background:linear-gradient(90deg,#17613a,#27804b);
-  color:white;font-size:14px;font-weight:bold;
+  display:block;
+  width:100%;
+  margin-top:8px;
+  padding:11px;
+  border:2px solid #b99569;
+  border-radius:7px;
+  background:linear-gradient(90deg,#617b55,#81966e);
+  color:white;
+  font-size:14px;
+  font-weight:bold;
 }
-.settingsAction:hover{filter:brightness(1.12)}
-.settingsAction.danger{background:linear-gradient(90deg,#941d2b,#c13c43)}
-.settingsNote{font-size:12px;color:#775638;line-height:1.5}
-#saveStatus{font-size:12px;color:#26713f;margin-top:8px}
+
+.settingsAction:hover{filter:brightness(1.1)}
+.settingsAction.danger{background:linear-gradient(90deg,#925b4b,#b5775e)}
+
+.settingsNote{
+  font-size:12px;
+  color:#775638;
+  line-height:1.5;
+}
+
+#saveStatus{
+  font-size:12px;
+  color:#527449;
+  margin-top:8px;
+}
+
 @media(max-width:700px){
   #main{grid-template-columns:1fr 270px}
   #cookieStage{width:min(55vw,45vh);height:min(55vw,45vh)}
-  header{height:52px;font-size:22px}
+  header{height:58px}
 }
+
 @media(max-width:520px){
   #main{grid-template-columns:1fr 190px}
   #shop{padding:7px}
-  .upgrade{gap:5px;padding:5px}
-  .upgradeIcon{width:32px;height:32px;font-size:19px}
+  .upgrade{gap:6px;padding:7px;min-height:68px}
+  .upgradeIcon{width:34px;height:34px;font-size:19px}
   .upgradeName{font-size:12px}
   .upgradeDesc{font-size:10px}
   .upgradeCost{font-size:10px}
@@ -209,48 +560,73 @@ header{
 }
 </style>
 </head>
+
 <body>
 <div id="game">
-<header>🎄 COOKIE CLICKER 🎄</header>
+
+<header>
+  <div id="gameTitle">🍪 COOKIE CLICKER 🍪</div>
+  <div id="subtitle">A LITTLE BAKERY FULL OF WARMTH</div>
+</header>
+
 <div id="main">
+
 <section id="bakery">
+
   <div id="stats">
     <div id="cookieCount">0 cookies</div>
     <div id="cps">per second: 0</div>
     <div id="clickPower">per click: 1</div>
   </div>
+
   <div id="cookieStage">
+
     <div id="cookie">
       <span class="chip"></span><span class="chip"></span>
       <span class="chip"></span><span class="chip"></span>
       <span class="chip"></span><span class="chip"></span>
       <span class="chip"></span><span class="chip"></span>
     </div>
+
     <div id="cursorCount"></div>
-    <button id="goldenCookie" title="Click for a bonus!">🎁</button>
+    <button id="goldenCookie" title="Click for a bonus!">✨</button>
+
   </div>
-  <div id="clickHint">❄ Click the cookie to bake cookies! ❄</div>
+
+  <div id="clickHint">☕ Freshly baked cookies, just for you ☕</div>
+
 </section>
+
 <aside id="shop">
-  <div class="shopHeader">🎁 CHRISTMAS BAKERY 🎁</div>
-  <div class="sectionTitle">🍪 Regular Upgrades</div>
+
+  <div class="shopHeader">🥐 THE LITTLE BAKERY</div>
+  <div class="shopSub">Made with warmth and lots of cookies</div>
+
+  <div class="sectionTitle">🍪 Bakery Upgrades</div>
   <div id="normalShop"></div>
-  <div class="sectionTitle christmas">🎄 CHRISTMAS LIMITED 🎅</div>
+
+  <div class="sectionTitle special">🌿 Cozy Specials</div>
   <div id="christmasShop"></div>
+
 </aside>
 </div>
+
 <footer id="bottomBar">
-  <span>🎄 Cookie Bakery</span>
+  <span>☕ Cozy Bakery</span>
   <button class="smallButton" id="soundBtn">🔊 Sound: Off</button>
   <button class="smallButton" id="settingsBtn">⚙ Settings</button>
 </footer>
+
 </div>
+
+<!-- Settings menu -->
 
 <div id="settingsOverlay">
   <div id="settingsPanel">
+
     <div id="settingsHeader">
-      <span>⚙ Bakery Settings</span>
-      <button id="closeSettings" title="Close">✕</button>
+      <span>⚙ Settings</span>
+      <button id="closeSettings">✕</button>
     </div>
 
     <div class="settingsSection">
@@ -258,28 +634,32 @@ header{
       <div class="settingsNote">
         Your game automatically saves every 5 seconds and when you leave the page.
       </div>
+
       <button class="settingsAction" id="saveBtn">💾 Save Now</button>
       <button class="settingsAction" id="downloadBtn">⬇ Download Save File</button>
       <button class="settingsAction" id="uploadBtn">⬆ Upload Save File</button>
+
       <input id="uploadInput" type="file" accept=".json,application/json" hidden>
+
       <div id="saveStatus">Autosave is enabled.</div>
     </div>
 
     <div class="settingsSection">
       <h3>🔄 Game Data</h3>
       <div class="settingsNote">
-        Resetting will erase your current bakery progress. Export a save file first if you want a backup.
+        Resetting erases your current bakery progress. Download a backup first if you want to keep it.
       </div>
       <button class="settingsAction danger" id="resetBtn">↻ Reset Game</button>
     </div>
 
     <div class="settingsSection">
-      <h3>🎄 About</h3>
+      <h3>🍪 About</h3>
       <div class="settingsNote">
-        Cookie Clicker Christmas Edition<br>
-        Your progress is saved in this browser.
+        Cookie Clicker<br>
+        A cozy little cookie bakery.
       </div>
     </div>
+
   </div>
 </div>
 
@@ -287,173 +667,302 @@ header{
 
 <script>
 const $=id=>document.getElementById(id);
-let cookies=0,totalCookies=0,clickPower=1,sound=false;
+
+let cookies=0;
+let totalCookies=0;
+let clickPower=1;
+let sound=false;
 let goldenTimeout=null;
+
 const counts={};
 
 const upgrades=[
-{id:"cursor",name:"Cursor",icon:"🖱️",desc:"Automatic cookie production.",price:15,cps:.1},
-{id:"grandma",name:"Grandma",icon:"👵",desc:"A nice grandma to bake cookies.",price:100,cps:1},
-{id:"farm",name:"Farm",icon:"🌾",desc:"Grows cookie plants.",price:1100,cps:8},
-{id:"mine",name:"Mine",icon:"⛏️",desc:"Mines cookie dough.",price:12000,cps:47},
-{id:"factory",name:"Factory",icon:"🏭",desc:"Mass-produces cookies.",price:130000,cps:260},
-{id:"bank",name:"Bank",icon:"🏦",desc:"Generates cookies from interest.",price:1400000,cps:1400},
-{id:"temple",name:"Temple",icon:"🏛️",desc:"Ancient cookie powers.",price:20000000,cps:7800},
-{id:"wizard",name:"Wizard Tower",icon:"🧙",desc:"Magically creates cookies.",price:330000000,cps:44000},
-{id:"shipment",name:"Shipment",icon:"🚀",desc:"Imports cookies from space.",price:5100000000,cps:260000},
-{id:"alchemy",name:"Alchemy Lab",icon:"⚗️",desc:"Turns gold into cookies.",price:75000000000,cps:1600000},
-{id:"portal",name:"Portal",icon:"🌀",desc:"Opens a cookie dimension.",price:1000000000000,cps:10000000},
-{id:"time",name:"Time Machine",icon:"⏰",desc:"Brings cookies from the future.",price:14000000000000,cps:65000000},
-{id:"antimatter",name:"Antimatter Condenser",icon:"⚛️",desc:"Condenses the universe into cookies.",price:170000000000000,cps:430000000},
-{id:"prism",name:"Prism",icon:"💎",desc:"Converts light into cookies.",price:2100000000000000,cps:2900000000},
-{id:"chance",name:"Chance Maker",icon:"🎲",desc:"Creates cookies through luck.",price:26000000000000000,cps:21000000000},
-{id:"fractal",name:"Fractal Engine",icon:"🔷",desc:"Cookies create more cookies.",price:310000000000000000,cps:150000000000}
+ {id:"cursor",name:"Cursor",icon:"🖱️",desc:"Automatically clicks cookies.",price:15,cps:.1},
+ {id:"grandma",name:"Grandma",icon:"👵",desc:"A grandma who loves baking.",price:100,cps:1},
+ {id:"farm",name:"Cookie Farm",icon:"🌱",desc:"Grow your own cookie ingredients.",price:1100,cps:8},
+ {id:"mine",name:"Cookie Mine",icon:"⛏️",desc:"Dig up delicious cookie dough.",price:12000,cps:47},
+ {id:"factory",name:"Factory",icon:"🏭",desc:"A whole building full of ovens.",price:130000,cps:260},
+ {id:"bank",name:"Cookie Bank",icon:"🏦",desc:"Your cookies earn more cookies.",price:1400000,cps:1400},
+ {id:"temple",name:"Cookie Temple",icon:"🏛️",desc:"A peaceful place of cookie worship.",price:20000000,cps:7800},
+ {id:"wizard",name:"Wizard Tower",icon:"🧙",desc:"Magic makes the best cookies.",price:330000000,cps:44000},
+ {id:"shipment",name:"Cookie Delivery",icon:"🚚",desc:"Cookies from faraway bakeries.",price:5100000000,cps:260000},
+ {id:"alchemy",name:"Alchemy Lab",icon:"⚗️",desc:"Turn ordinary things into cookies.",price:75000000000,cps:1600000},
+ {id:"portal",name:"Cookie Portal",icon:"🌀",desc:"A doorway to a cookie dimension.",price:1000000000000,cps:10000000},
+ {id:"time",name:"Time Machine",icon:"⏰",desc:"Borrow cookies from tomorrow.",price:14000000000000,cps:65000000},
+ {id:"antimatter",name:"Antimatter Condenser",icon:"⚛️",desc:"Condense the universe into cookies.",price:170000000000000,cps:430000000},
+ {id:"prism",name:"Prism",icon:"💎",desc:"Turn light into delicious cookies.",price:2100000000000000,cps:2900000000},
+ {id:"chance",name:"Chance Maker",icon:"🎲",desc:"A little luck goes a long way.",price:26000000000000000,cps:21000000000},
+ {id:"fractal",name:"Fractal Engine",icon:"🔷",desc:"Cookies make even more cookies.",price:310000000000000000,cps:150000000000},
+
+ {id:"oven",name:"Extra Oven",icon:"🔥",desc:"More ovens, more cookies.",price:500000000000000000,cps:900000000000},
+ {id:"mixer",name:"Stand Mixer",icon:"🥣",desc:"Mixes cookie dough all day.",price:800000000000000000,cps:1800000000000},
+ {id:"bakery",name:"Mega Bakery",icon:"🥐",desc:"A bakery on every street.",price:1200000000000000000,cps:3500000000000},
+ {id:"robot",name:"Baking Robot",icon:"🤖",desc:"Never gets tired of baking.",price:2000000000000000000,cps:7000000000000},
+ {id:"moon",name:"Moon Bakery",icon:"🌙",desc:"Bakes cookies under the stars.",price:5000000000000000000,cps:16000000000000}
 ];
 
+/* These IDs preserve compatibility with older save files. */
 const christmasUpgrades=[
-{id:"tree",name:"Christmas Tree",icon:"🎄",desc:"A festive cookie tree.",price:500,cps:5},
-{id:"snowman",name:"Snowman",icon:"☃️",desc:"A chilly cookie helper.",price:5000,cps:35},
-{id:"santa",name:"Santa's Workshop",icon:"🎅",desc:"Santa makes cookies all year.",price:100000,cps:550},
-{id:"reindeer",name:"Reindeer Stable",icon:"🦌",desc:"Reindeer-powered cookie production.",price:2500000,cps:12000},
-{id:"gift",name:"Gift Factory",icon:"🎁",desc:"Endless presents full of cookies.",price:50000000,cps:300000},
-{id:"elf",name:"Elf Helpers",icon:"🧝",desc:"A team of cookie-making elves.",price:900000000,cps:5000000},
-{id:"northpole",name:"North Pole Bakery",icon:"❄️",desc:"The ultimate Christmas bakery.",price:25000000000,cps:180000000}
+ {id:"tree",name:"Houseplant Shelf",icon:"🪴",desc:"A little greenery for the bakery.",price:500,cps:5},
+ {id:"snowman",name:"Sunny Window",icon:"🪟",desc:"A lovely place to watch the weather.",price:5000,cps:35},
+ {id:"santa",name:"Coffee Corner",icon:"☕",desc:"Coffee and cookies for everyone.",price:100000,cps:550},
+ {id:"reindeer",name:"Bakery Cat",icon:"🐈",desc:"A sleepy cat keeps the bakery cozy.",price:2500000,cps:12000},
+ {id:"gift",name:"Tea Station",icon:"🫖",desc:"A warm cup of tea with every cookie.",price:50000000,cps:300000},
+ {id:"elf",name:"Book Nook",icon:"📚",desc:"A quiet corner for cookie lovers.",price:900000000,cps:5000000},
+ {id:"northpole",name:"Fireplace",icon:"🔥",desc:"A warm fire and endless cookies.",price:25000000000,cps:180000000}
 ];
 
-[...upgrades,...christmasUpgrades].forEach(u=>counts[u.id]=0);
+[...upgrades,...christmasUpgrades].forEach(u=>{
+ counts[u.id]=0;
+});
 
 function format(n){
  if(n<1000)return Math.floor(n).toLocaleString();
+
  const units=["K","M","B","T","Qa","Qi","Sx","Sp","Oc","No","Dc"];
- let i=-1;while(n>=1000&&i<units.length-1){n/=1000;i++}
+ let i=-1;
+
+ while(n>=1000&&i<units.length-1){
+  n/=1000;
+  i++;
+ }
+
  return n.toFixed(2)+units[i];
 }
+
 function getCps(){
- return [...upgrades,...christmasUpgrades].reduce((s,u)=>s+counts[u.id]*u.cps,0);
+ return [...upgrades,...christmasUpgrades]
+  .reduce((s,u)=>s+counts[u.id]*u.cps,0);
 }
+
 function showToast(msg){
- const t=$("toast");t.textContent=msg;t.style.opacity=1;
+ const t=$("toast");
+ t.textContent=msg;
+ t.style.opacity=1;
+
  clearTimeout(showToast.timer);
- showToast.timer=setTimeout(()=>t.style.opacity=0,1800);
+
+ showToast.timer=setTimeout(()=>{
+  t.style.opacity=0;
+ },1800);
 }
-function renderShop(list,container,isChristmas=false){
+
+/*
+  Build the shop only once.
+  This is the important fix for the shivering buttons:
+  normal game updates no longer recreate the upgrade elements.
+*/
+
+function buildShop(list,container){
  container.innerHTML="";
+
  list.forEach(u=>{
-  const count=counts[u.id]||0;
-  const cost=Math.floor(u.price*Math.pow(1.15,count));
   const b=document.createElement("button");
-  b.className="upgrade"+(isChristmas?" christmasUpgrade":"");
-  b.disabled=cookies<cost;
+  b.className="upgrade";
+  b.type="button";
+
   b.innerHTML=`
    <div class="upgradeIcon">${u.icon}</div>
    <div class="upgradeInfo">
     <div class="upgradeName">${u.name}</div>
     <div class="upgradeDesc">${u.desc}</div>
-    <div class="upgradeCost">🍪 ${format(cost)} cookies</div>
+    <div class="upgradeCost"></div>
    </div>
-   <div class="upgradeCount">${count}</div>`;
+   <div class="upgradeCount">0</div>
+  `;
+
   b.addEventListener("click",()=>buyUpgrade(u));
+
+  u.button=b;
+  u.costElement=b.querySelector(".upgradeCost");
+  u.countElement=b.querySelector(".upgradeCount");
+
   container.appendChild(b);
  });
 }
-function render(){
+
+function updateShop(){
+ [...upgrades,...christmasUpgrades].forEach(u=>{
+  const count=counts[u.id]||0;
+  const cost=Math.floor(u.price*Math.pow(1.15,count));
+
+  u.button.disabled=cookies<cost;
+  u.costElement.textContent="🍪 "+format(cost)+" cookies";
+  u.countElement.textContent=count;
+ });
+}
+
+function renderStats(){
  $("cookieCount").textContent=format(cookies)+" cookies";
  $("cps").textContent="per second: "+format(getCps());
  $("clickPower").textContent="per click: "+format(clickPower);
- renderShop(upgrades,$("normalShop"));
- renderShop(christmasUpgrades,$("christmasShop"));
 }
+
+function render(){
+ renderStats();
+ updateShop();
+}
+
 function buyUpgrade(u){
  const cost=Math.floor(u.price*Math.pow(1.15,counts[u.id]));
+
  if(cookies<cost)return;
- cookies-=cost;counts[u.id]++;
+
+ cookies-=cost;
+ counts[u.id]++;
+
  showToast("Purchased "+u.name+"!");
- render();saveGame();
+
+ render();
+ saveGame();
 }
+
+/* Cookie clicking */
+
 $("cookie").addEventListener("click",()=>{
- cookies+=clickPower;totalCookies+=clickPower;
+ cookies+=clickPower;
+ totalCookies+=clickPower;
+
  $("cookie").style.transform="scale(.94)";
- setTimeout(()=>$("cookie").style.transform="",80);
- render();saveGame();
+
+ setTimeout(()=>{
+  $("cookie").style.transform="";
+ },80);
+
+ renderStats();
+ updateShop();
+ saveGame();
 });
 
-/* Animated cursors orbit around the cookie and point toward its center. */
+/* Animated cursors */
+
 function animateCursors(){
  const stage=$("cookieStage");
+
  stage.querySelectorAll(".cursorSprite").forEach(el=>el.remove());
+
  const amount=counts.cursor||0;
  const shown=Math.min(amount,60);
+
  const rect=stage.getBoundingClientRect();
- const cx=rect.width/2,cy=rect.height/2;
+ const cx=rect.width/2;
+ const cy=rect.height/2;
  const radius=Math.min(rect.width,rect.height)*.43;
  const time=performance.now()/1000;
+
  for(let i=0;i<shown;i++){
   const angle=(Math.PI*2*i/shown)+time*.65;
   const x=cx+Math.cos(angle)*radius;
   const y=cy+Math.sin(angle)*radius;
+
   const cursor=document.createElement("div");
   cursor.className="cursorSprite";
   cursor.textContent="➤";
   cursor.style.left=x+"px";
   cursor.style.top=y+"px";
+
   const towardCenter=Math.atan2(cy-y,cx-x)*180/Math.PI;
-  cursor.style.transform=`translate(-50%,-50%) rotate(${towardCenter}deg)`;
+
+  cursor.style.transform=
+   `translate(-50%,-50%) rotate(${towardCenter}deg)`;
+
   stage.appendChild(cursor);
  }
+
  const badge=$("cursorCount");
- if(amount>60){badge.style.display="block";badge.textContent="+"+(amount-60)+" more cursors"}
- else badge.style.display="none";
+
+ if(amount>60){
+  badge.style.display="block";
+  badge.textContent="+"+(amount-60)+" more cursors";
+ }else{
+  badge.style.display="none";
+ }
+
  requestAnimationFrame(animateCursors);
 }
+
 requestAnimationFrame(animateCursors);
+
+/* Bonus cookie */
 
 function spawnGolden(){
  const btn=$("goldenCookie");
+
  btn.style.display="block";
  btn.style.left=(10+Math.random()*70)+"%";
  btn.style.top=(10+Math.random()*70)+"%";
- goldenTimeout=setTimeout(()=>btn.style.display="none",10000);
+
+ goldenTimeout=setTimeout(()=>{
+  btn.style.display="none";
+ },10000);
 }
+
 $("goldenCookie").addEventListener("click",()=>{
  const reward=Math.max(50,getCps()*60,clickPower*50);
- cookies+=reward;totalCookies+=reward;
+
+ cookies+=reward;
+ totalCookies+=reward;
+
  $("goldenCookie").style.display="none";
+
  clearTimeout(goldenTimeout);
- showToast("🎁 Bonus! +"+format(reward)+" cookies!");
- render();saveGame();
+
+ showToast("✨ Bonus! +"+format(reward)+" cookies!");
+
+ render();
+ saveGame();
 });
+
+/* Falling decorations */
 
 function snow(){
  const f=document.createElement("div");
- f.className="snowflake";f.textContent=["❄","❅","❆"][Math.floor(Math.random()*3)];
+
+ f.className="snowflake";
+ f.textContent=["✦","✧","❋"][Math.floor(Math.random()*3)];
  f.style.left=Math.random()*100+"vw";
  f.style.fontSize=(10+Math.random()*16)+"px";
- const d=5+Math.random()*6;f.style.animationDuration=d+"s";
- document.body.appendChild(f);setTimeout(()=>f.remove(),d*1000);
-}
-setInterval(snow,350);
 
-/* Automatic saving and save-file import/export */
+ const d=5+Math.random()*6;
+
+ f.style.animationDuration=d+"s";
+
+ document.body.appendChild(f);
+
+ setTimeout(()=>f.remove(),d*1000);
+}
+
+setInterval(snow,850);
+
+/* Save system */
+
 const SAVE_KEY="cookieClickerSave";
 
 function getSaveData(){
  return {
   version:1,
   savedAt:new Date().toISOString(),
-  cookies,totalCookies,clickPower,
+  cookies,
+  totalCookies,
+  clickPower,
   counts:{...counts}
  };
 }
+
 function saveGame(){
  try{
   localStorage.setItem(SAVE_KEY,JSON.stringify(getSaveData()));
-  $("saveStatus").textContent="Last saved: "+new Date().toLocaleTimeString();
+
+  $("saveStatus").textContent=
+   "Last saved: "+new Date().toLocaleTimeString();
+
   return true;
  }catch(e){
   showToast("Couldn't save: browser storage may be full.");
   return false;
  }
 }
+
 function applySaveData(d){
  if(!d||typeof d!=="object"||
     !Number.isFinite(Number(d.cookies))||Number(d.cookies)<0||
@@ -462,68 +971,112 @@ function applySaveData(d){
     !d.counts||typeof d.counts!=="object"){
   throw new Error("That file isn't a valid Cookie Clicker save.");
  }
+
  const nextCounts={};
+
  Object.keys(counts).forEach(id=>{
   const value=Number(d.counts[id]??0);
-  if(!Number.isFinite(value)||value<0)throw new Error("The save has invalid upgrade counts.");
+
+  if(!Number.isFinite(value)||value<0){
+   throw new Error("The save has invalid upgrade counts.");
+  }
+
   nextCounts[id]=Math.floor(value);
  });
+
  cookies=Number(d.cookies);
  totalCookies=Number(d.totalCookies);
  clickPower=Number(d.clickPower);
+
  Object.assign(counts,nextCounts);
+
  render();
  saveGame();
 }
+
 function loadGame(){
  try{
   const raw=localStorage.getItem(SAVE_KEY);
-  if(raw)applySaveData(JSON.parse(raw));
+
+  if(raw){
+   applySaveData(JSON.parse(raw));
+  }
  }catch(e){
-  console.warn("Could not load Cookie Clicker save:",e);
+  console.warn("Could not load save:",e);
   showToast("Couldn't load saved game. Starting fresh.");
  }
 }
 
-/* Settings menu controls */
+/* Settings menu */
+
 function openSettings(){
  $("settingsOverlay").classList.add("open");
 }
+
 function closeSettings(){
  $("settingsOverlay").classList.remove("open");
 }
+
 $("settingsBtn").addEventListener("click",openSettings);
 $("closeSettings").addEventListener("click",closeSettings);
+
 $("settingsOverlay").addEventListener("click",e=>{
  if(e.target===$("settingsOverlay"))closeSettings();
 });
+
 document.addEventListener("keydown",e=>{
  if(e.key==="Escape")closeSettings();
 });
 
+/* Manual save */
+
 $("saveBtn").addEventListener("click",()=>{
  if(saveGame())showToast("Game saved!");
 });
+
+/* Download save */
+
 $("downloadBtn").addEventListener("click",()=>{
- const blob=new Blob([JSON.stringify(getSaveData(),null,2)],{type:"application/json"});
+ const blob=new Blob(
+  [JSON.stringify(getSaveData(),null,2)],
+  {type:"application/json"}
+ );
+
  const url=URL.createObjectURL(blob);
  const a=document.createElement("a");
+
  a.href=url;
  a.download="cookie-clicker-save.json";
+
  document.body.appendChild(a);
  a.click();
  a.remove();
+
  setTimeout(()=>URL.revokeObjectURL(url),1000);
+
  showToast("Save file downloaded!");
 });
-$("uploadBtn").addEventListener("click",()=>$("uploadInput").click());
+
+/* Upload save */
+
+$("uploadBtn").addEventListener("click",()=>{
+ $("uploadInput").click();
+});
+
 $("uploadInput").addEventListener("change",async event=>{
  const file=event.target.files[0];
+
  if(!file)return;
+
  try{
   const data=JSON.parse(await file.text());
-  if(!confirm("Import this save and replace your current bakery progress?"))return;
+
+  if(!confirm("Import this save and replace your current progress?")){
+   return;
+  }
+
   applySaveData(data);
+
   showToast("Save imported successfully!");
  }catch(e){
   showToast(e.message||"Couldn't import that save file.");
@@ -531,20 +1084,43 @@ $("uploadInput").addEventListener("change",async event=>{
   event.target.value="";
  }
 });
+
+/* Reset */
+
 $("resetBtn").addEventListener("click",()=>{
  if(!confirm("Are you sure you want to reset your bakery?"))return;
- cookies=0;totalCookies=0;clickPower=1;
- Object.keys(counts).forEach(id=>counts[id]=0);
+
+ cookies=0;
+ totalCookies=0;
+ clickPower=1;
+
+ Object.keys(counts).forEach(id=>{
+  counts[id]=0;
+ });
+
  localStorage.removeItem(SAVE_KEY);
- render();saveGame();
+
+ render();
+ saveGame();
+
  showToast("Bakery reset!");
+
  closeSettings();
 });
 
+/* Sound toggle */
+
 $("soundBtn").addEventListener("click",()=>{
  sound=!sound;
- $("soundBtn").textContent=sound?"🔊 Sound: On":"🔊 Sound: Off";
+
+ $("soundBtn").textContent=
+  sound?"🔊 Sound: On":"🔊 Sound: Off";
 });
+
+/* Start game */
+
+buildShop(upgrades,$("normalShop"));
+buildShop(christmasUpgrades,$("christmasShop"));
 
 loadGame();
 render();
@@ -552,18 +1128,33 @@ render();
 document.addEventListener("visibilitychange",()=>{
  if(document.visibilityState==="hidden")saveGame();
 });
+
 window.addEventListener("pagehide",saveGame);
+
+/* Cookie production */
 
 setInterval(()=>{
  const gain=getCps()/10;
- cookies+=gain;totalCookies+=gain;render();
+
+ cookies+=gain;
+ totalCookies+=gain;
+
+ renderStats();
+ updateShop();
 },100);
+
+/* Autosave */
 
 setInterval(saveGame,5000);
 
+/* Bonus cookie appearances */
+
 setInterval(()=>{
- if(Math.random()<.65&&$("goldenCookie").style.display!=="block")spawnGolden();
+ if(Math.random()<.65&&$("goldenCookie").style.display!=="block"){
+  spawnGolden();
+ }
 },35000);
+
 </script>
 </body>
 </html>
