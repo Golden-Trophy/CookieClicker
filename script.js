@@ -4,8 +4,11 @@ let cookies = 0;
 let totalCookies = 0;
 let clickPower = 1;
 let sound = false;
-let goldenTimeout = null;
+let musicTimer = null;
+let musicStep = 0;
+let audioContext = null;
 
+const SAVE_KEY = "cookieClickerSave";
 const counts = {};
 
 const upgrades = [
@@ -42,16 +45,15 @@ const christmasUpgrades = [
   {id:"northpole",name:"Winter Oven",icon:"❄️",desc:"A special seasonal baking oven.",price:25000000000,cps:180000000}
 ];
 
-[...upgrades, ...christmasUpgrades].forEach(upgrade => {
+[...upgrades,...christmasUpgrades].forEach(upgrade => {
   counts[upgrade.id] = 0;
 });
 
-/* Number formatting */
+/* NUMBER FORMATTING */
 
 function format(number) {
-  if (number < 1000) {
-    return Math.floor(number).toLocaleString();
-  }
+  if (!Number.isFinite(number)) return "∞";
+  if (number < 1000) return Math.floor(number).toLocaleString();
 
   const units = ["K","M","B","T","Qa","Qi","Sx","Sp","Oc","No","Dc"];
   let index = -1;
@@ -65,51 +67,29 @@ function format(number) {
 }
 
 function getCps() {
-  return [...upgrades, ...christmasUpgrades].reduce(
-    (sum, upgrade) => sum + counts[upgrade.id] * upgrade.cps,
+  return [...upgrades,...christmasUpgrades].reduce(
+    (sum,upgrade) => sum + counts[upgrade.id] * upgrade.cps,
     0
   );
 }
 
 function getBuildingCount() {
-  return Object.values(counts).reduce((sum, amount) => sum + amount, 0);
+  return Object.values(counts).reduce((sum,value) => sum + value,0);
 }
 
 function showToast(message) {
   const toast = $("toast");
   toast.textContent = message;
-  toast.style.opacity = 1;
+  toast.style.opacity = "1";
 
   clearTimeout(showToast.timer);
 
   showToast.timer = setTimeout(() => {
-    toast.style.opacity = 0;
-  }, 1800);
+    toast.style.opacity = "0";
+  },1900);
 }
 
-/* MUSIC AND SOUND */
-
-let audioContext = null;
-let musicTimer = null;
-let musicStep = 0;
-
-const melody = [
-  659,784,880,784,659,523,587,659,
-  587,523,440,523,587,659,784,659,
-  880,784,659,587,523,587,659,784
-];
-
-const bassNotes = [
-  130.81,130.81,164.81,164.81,
-  174.61,174.61,146.83,146.83
-];
-
-const chords = [
-  [261.63,329.63,392],
-  [220,261.63,329.63],
-  [174.61,220,261.63],
-  [196,246.94,293.66]
-];
+/* AUDIO */
 
 function getAudio() {
   if (!audioContext) {
@@ -125,73 +105,99 @@ function getAudio() {
   return audioContext;
 }
 
-function tone(frequency, duration = .12, type = "square", volume = .035, delay = 0) {
+function tone(frequency,duration=.15,type="triangle",volume=.025,delay=0) {
   const context = getAudio();
   if (!context) return;
 
   const oscillator = context.createOscillator();
   const gain = context.createGain();
 
-  const startTime = context.currentTime + delay;
-  const endTime = startTime + duration;
+  const start = context.currentTime + delay;
+  const end = start + duration;
 
   oscillator.type = type;
-  oscillator.frequency.setValueAtTime(frequency, startTime);
+  oscillator.frequency.setValueAtTime(frequency,start);
 
-  gain.gain.setValueAtTime(.001, startTime);
-  gain.gain.linearRampToValueAtTime(volume, startTime + .015);
-  gain.gain.exponentialRampToValueAtTime(.001, endTime);
+  gain.gain.setValueAtTime(.001,start);
+  gain.gain.linearRampToValueAtTime(volume,start+.02);
+  gain.gain.exponentialRampToValueAtTime(.001,end);
 
   oscillator.connect(gain);
   gain.connect(context.destination);
 
-  oscillator.start(startTime);
-  oscillator.stop(endTime + .02);
+  oscillator.start(start);
+  oscillator.stop(end+.02);
 }
 
 function playClick() {
   if (!sound) return;
-  tone(520,.045,"square",.025);
-  tone(780,.035,"triangle",.012,.025);
+  tone(520,.045,"square",.018);
+  tone(780,.06,"triangle",.014,.025);
 }
 
 function playPurchase() {
   if (!sound) return;
-  [523,659,784,1047].forEach((n,i) => {
-    tone(n,.13,"triangle",.04,i*.08);
+
+  [523,659,784,1047].forEach((frequency,index) => {
+    tone(frequency,.15,"triangle",.035,index*.075);
   });
 }
 
 function playBonus() {
   if (!sound) return;
-  [523,659,784,1047,1318].forEach((n,i) => {
-    tone(n,.2,"triangle",.05,i*.075);
+
+  [523,659,784,1047,1318,1568].forEach((frequency,index) => {
+    tone(frequency,.2,"triangle",.04,index*.065);
   });
 }
 
-function playMusicBeat() {
+/*
+  A little retro holiday-inspired tune:
+  a repeating melody, soft bass, and chord backing.
+*/
+
+const melody = [
+  659,784,880,784,659,523,587,659,
+  587,523,440,523,587,659,784,659,
+  880,784,659,587,523,587,659,784,
+  880,988,880,784,659,587,523,659
+];
+
+const bass = [
+  130.81,130.81,164.81,164.81,
+  174.61,174.61,146.83,146.83
+];
+
+const chords = [
+  [261.63,329.63,392],
+  [220,261.63,329.63],
+  [174.61,220,261.63],
+  [196,246.94,293.66]
+];
+
+function musicBeat() {
   if (!sound) return;
 
   const note = melody[musicStep % melody.length];
-  const bass = bassNotes[musicStep % bassNotes.length];
+  const bassNote = bass[musicStep % bass.length];
 
-  tone(note,.19,"square",.018);
+  tone(note,.19,"square",.014);
 
   if (musicStep % 2 === 0) {
-    tone(note * 1.5,.13,"triangle",.009,.025);
-    tone(bass,.28,"triangle",.025);
+    tone(note*1.5,.14,"triangle",.008,.025);
+    tone(bassNote,.32,"triangle",.022);
   }
 
   if (musicStep % 4 === 0) {
-    const chord = chords[Math.floor(musicStep / 4) % chords.length];
+    const chord = chords[Math.floor(musicStep/4) % chords.length];
 
     chord.forEach((frequency,index) => {
-      tone(frequency,.32,"triangle",.009,index*.015);
+      tone(frequency,.38,"sine",.009,index*.018);
     });
   }
 
   if (musicStep % 2 === 1) {
-    tone(110,.035,"sine",.018);
+    tone(110,.035,"sine",.014);
   }
 
   musicStep++;
@@ -199,8 +205,8 @@ function playMusicBeat() {
 
 function startMusic() {
   if (!sound || musicTimer) return;
-  playMusicBeat();
-  musicTimer = setInterval(playMusicBeat,220);
+  musicBeat();
+  musicTimer = setInterval(musicBeat,230);
 }
 
 function stopMusic() {
@@ -212,10 +218,13 @@ function stopMusic() {
 
 function setSound(enabled) {
   sound = enabled;
-  localStorage.setItem("cookieClickerSound",sound ? "on" : "off");
+
+  try {
+    localStorage.setItem("cookieClickerSound",sound ? "on" : "off");
+  } catch {}
 
   $("soundBtn").textContent = sound ? "🔊 Sound: On" : "🔇 Sound: Off";
-  $("musicSettingsBtn").textContent = sound ? "🔊 Turn Sound Off" : "🎵 Turn Sound On";
+  $("musicSettingsBtn").textContent = sound ? "Turn Sound Off" : "Turn Sound On";
 
   if (sound) {
     getAudio();
@@ -226,32 +235,34 @@ function setSound(enabled) {
   }
 }
 
-$("soundBtn").addEventListener("click",() => setSound(!sound));
-$("musicSettingsBtn").addEventListener("click",() => setSound(!sound));
-
 try {
   sound = localStorage.getItem("cookieClickerSound") === "on";
 } catch {
   sound = false;
 }
 
-function restartRememberedMusic() {
+$("soundBtn").textContent = sound ? "🔊 Sound: On" : "🔇 Sound: Off";
+$("musicSettingsBtn").textContent = sound ? "Turn Sound Off" : "Turn Sound On";
+
+$("soundBtn").addEventListener("click",() => setSound(!sound));
+$("musicSettingsBtn").addEventListener("click",() => setSound(!sound));
+
+/* Browsers require interaction before starting audio after a reload. */
+
+function resumeRememberedMusic() {
   if (!sound) return;
 
   getAudio();
   startMusic();
 
-  document.removeEventListener("pointerdown",restartRememberedMusic);
-  document.removeEventListener("keydown",restartRememberedMusic);
+  document.removeEventListener("pointerdown",resumeRememberedMusic);
+  document.removeEventListener("keydown",resumeRememberedMusic);
 }
 
 if (sound) {
-  document.addEventListener("pointerdown",restartRememberedMusic);
-  document.addEventListener("keydown",restartRememberedMusic);
+  document.addEventListener("pointerdown",resumeRememberedMusic);
+  document.addEventListener("keydown",resumeRememberedMusic);
 }
-
-$("soundBtn").textContent = sound ? "🔊 Sound: On" : "🔇 Sound: Off";
-$("musicSettingsBtn").textContent = sound ? "🔊 Turn Sound Off" : "🎵 Turn Sound On";
 
 /* SHOP */
 
@@ -260,24 +271,38 @@ function buildShop(list,container) {
 
   list.forEach(upgrade => {
     const button = document.createElement("button");
-    button.className = "upgrade";
     button.type = "button";
+    button.className = "upgrade";
 
-    button.innerHTML = `
-      <div class="upgradeIcon">${upgrade.icon}</div>
-      <div class="upgradeInfo">
-        <div class="upgradeName">${upgrade.name}</div>
-        <div class="upgradeDesc">${upgrade.desc}</div>
-        <div class="upgradeCost"></div>
-      </div>
-      <div class="upgradeCount">0</div>
-    `;
+    const icon = document.createElement("div");
+    icon.className = "upgradeIcon";
+    icon.textContent = upgrade.icon;
 
+    const info = document.createElement("div");
+    info.className = "upgradeInfo";
+
+    const name = document.createElement("div");
+    name.className = "upgradeName";
+    name.textContent = upgrade.name;
+
+    const desc = document.createElement("div");
+    desc.className = "upgradeDesc";
+    desc.textContent = upgrade.desc;
+
+    const cost = document.createElement("div");
+    cost.className = "upgradeCost";
+
+    info.append(name,desc,cost);
+
+    const count = document.createElement("div");
+    count.className = "upgradeCount";
+
+    button.append(icon,info,count);
     button.addEventListener("click",() => buyUpgrade(upgrade));
 
     upgrade.button = button;
-    upgrade.costElement = button.querySelector(".upgradeCost");
-    upgrade.countElement = button.querySelector(".upgradeCount");
+    upgrade.costElement = cost;
+    upgrade.countElement = count;
 
     container.appendChild(button);
   });
@@ -285,19 +310,19 @@ function buildShop(list,container) {
 
 function updateShop() {
   [...upgrades,...christmasUpgrades].forEach(upgrade => {
-    const count = counts[upgrade.id] || 0;
-    const cost = Math.floor(upgrade.price * Math.pow(1.15,count));
+    const amount = counts[upgrade.id] || 0;
+    const cost = Math.floor(upgrade.price * Math.pow(1.15,amount));
 
     upgrade.button.disabled = cookies < cost;
     upgrade.costElement.textContent = "🍪 " + format(cost) + " cookies";
-    upgrade.countElement.textContent = count;
+    upgrade.countElement.textContent = amount;
   });
 }
 
 function renderStats() {
   $("cookieCount").textContent = format(cookies) + " cookies";
-  $("cps").textContent = "⚡ " + format(getCps()) + " cookies per second";
-  $("clickPower").textContent = "🍪 Per click: " + format(clickPower);
+  $("cps").textContent = format(getCps()) + " cookies per second";
+  $("clickPower").textContent = format(clickPower);
 
   $("totalBaked").textContent = format(totalCookies);
   $("powerDisplay").textContent = format(clickPower);
@@ -326,36 +351,47 @@ function buyUpgrade(upgrade) {
 
 /* COOKIE CLICKING */
 
-$("cookie").addEventListener("click",() => {
+function clickCookie() {
   cookies += clickPower;
   totalCookies += clickPower;
 
   playClick();
 
-  $("cookie").style.transform = "scale(.94)";
-  setTimeout(() => $("cookie").style.transform = "",80);
+  $("cookie").style.transform = "scale(.95)";
+  setTimeout(() => {
+    $("cookie").style.transform = "";
+  },90);
 
   renderStats();
   updateShop();
   saveGame();
+}
+
+$("cookie").addEventListener("click",clickCookie);
+
+$("cookie").addEventListener("keydown",event => {
+  if (event.key === "Enter" || event.key === " ") {
+    event.preventDefault();
+    clickCookie();
+  }
 });
 
 /* CURSOR RINGS */
 
 /*
-  Ring capacities:
+  Ring sizes grow as:
   12, 18, 24, 30, 36, 42...
 
-  The ring radii are distributed across the available area.
-  Cursor size is calculated from both ring spacing and
-  the space between cursors on each individual ring.
+  All cursors are assigned to a ring.
+  The rings are distributed from the cookie to the
+  outer edge of the stage. Cursor icons shrink as
+  needed to avoid piling on top of one another.
 */
 
 let cursorElements = [];
 let lastCursorAmount = -1;
-let cursorAnimationFrame = null;
 
-function getRingCapacity(ring) {
+function ringCapacity(ring) {
   return 12 + ring * 6;
 }
 
@@ -363,24 +399,24 @@ function getCursorRing(index) {
   let remaining = index;
   let ring = 0;
 
-  while (remaining >= getRingCapacity(ring)) {
-    remaining -= getRingCapacity(ring);
+  while (remaining >= ringCapacity(ring)) {
+    remaining -= ringCapacity(ring);
     ring++;
   }
 
   return {
     ring,
     position: remaining,
-    capacity: getRingCapacity(ring)
+    capacity: ringCapacity(ring)
   };
 }
 
-function getTotalCursorRings(amount) {
+function getTotalRings(amount) {
   let total = 0;
   let ring = 0;
 
   while (total < amount) {
-    total += getRingCapacity(ring);
+    total += ringCapacity(ring);
     ring++;
   }
 
@@ -388,12 +424,11 @@ function getTotalCursorRings(amount) {
 }
 
 function rebuildCursors() {
-  const stage = $("cookieStage");
-
-  cursorElements.forEach(cursor => cursor.remove());
+  cursorElements.forEach(element => element.remove());
   cursorElements = [];
 
   const amount = counts.cursor || 0;
+  const stage = $("cookieStage");
 
   for (let i = 0; i < amount; i++) {
     const cursor = document.createElement("div");
@@ -406,14 +441,9 @@ function rebuildCursors() {
 
   lastCursorAmount = amount;
 
-  const badge = $("cursorCount");
-
-  if (amount > 0) {
-    badge.style.display = "block";
-    badge.textContent = amount + (amount === 1 ? " cursor" : " cursors");
-  } else {
-    badge.style.display = "none";
-  }
+  $("cursorCount").style.display = amount > 0 ? "block" : "none";
+  $("cursorCount").textContent =
+    amount + (amount === 1 ? " cursor" : " cursors");
 }
 
 function animateCursors() {
@@ -429,89 +459,87 @@ function animateCursors() {
 
     const centerX = rect.width / 2;
     const centerY = rect.height / 2;
-    const stageSize = Math.min(rect.width,rect.height);
+    const size = Math.min(rect.width,rect.height);
 
-    // The cookie occupies the middle; cursors start just outside it.
-    const innerRadius = stageSize * .32;
-    const outerRadius = stageSize * .48;
+    const innerRadius = size * .30;
+    const outerRadius = size * .49;
 
-    const totalRings = getTotalCursorRings(amount);
+    const rings = getTotalRings(amount);
 
-    // Give every ring its own radius.
-    const ringSpacing = totalRings > 1
-      ? (outerRadius - innerRadius) / (totalRings - 1)
+    const spacing = rings > 1
+      ? (outerRadius-innerRadius)/(rings-1)
       : 0;
 
-    const time = performance.now() / 1000;
+    const time = performance.now()/1000;
 
     cursorElements.forEach((cursor,index) => {
       const data = getCursorRing(index);
+      const radius = innerRadius + data.ring*spacing;
 
-      const radius = innerRadius + data.ring * ringSpacing;
+      const circumference = Math.PI*2*radius;
+      const aroundSpacing = circumference/data.capacity;
 
-      // Calculate tangential spacing between neighboring cursors.
-      const circumference = Math.PI * 2 * radius;
-      const tangentialSpacing = circumference / data.capacity;
-
-      // Cursor icons shrink if rings get crowded.
-      const radialSize = ringSpacing > 0 ? ringSpacing * .68 : 22;
       const iconSize = Math.max(
-        5,
-        Math.min(22,radialSize,tangentialSpacing * .65)
+        4,
+        Math.min(
+          21,
+          spacing > 0 ? spacing*.72 : 20,
+          aroundSpacing*.65
+        )
       );
 
+      const direction = data.ring % 2 === 0 ? 1 : -1;
       const angle =
-        (Math.PI * 2 * data.position / data.capacity) +
-        time * (data.ring % 2 === 0 ? .35 : -.35);
+        (Math.PI*2*data.position/data.capacity) +
+        time*.32*direction;
 
-      const x = centerX + Math.cos(angle) * radius;
-      const y = centerY + Math.sin(angle) * radius;
+      const x = centerX + Math.cos(angle)*radius;
+      const y = centerY + Math.sin(angle)*radius;
 
-      // Point each cursor inward toward the cookie.
-      const towardCenter = Math.atan2(
-        centerY - y,
-        centerX - x
-      ) * 180 / Math.PI;
+      const inwardAngle = Math.atan2(
+        centerY-y,
+        centerX-x
+      )*180/Math.PI;
 
-      cursor.style.left = x + "px";
-      cursor.style.top = y + "px";
-      cursor.style.width = iconSize + "px";
-      cursor.style.height = iconSize + "px";
-      cursor.style.fontSize = iconSize + "px";
+      cursor.style.left = x+"px";
+      cursor.style.top = y+"px";
+      cursor.style.width = iconSize+"px";
+      cursor.style.height = iconSize+"px";
+      cursor.style.fontSize = iconSize+"px";
       cursor.style.transform =
-        `translate(-50%, -50%) rotate(${towardCenter}deg)`;
+        `translate(-50%,-50%) rotate(${inwardAngle}deg)`;
     });
   }
 
-  cursorAnimationFrame = requestAnimationFrame(animateCursors);
+  requestAnimationFrame(animateCursors);
 }
 
 requestAnimationFrame(animateCursors);
 
-/* BONUS COOKIE */
+/* GOLDEN COOKIE */
 
 function spawnGolden() {
   const button = $("goldenCookie");
 
   button.style.display = "block";
-  button.style.left = (10 + Math.random() * 70) + "%";
-  button.style.top = (10 + Math.random() * 70) + "%";
+  button.style.left = (10+Math.random()*70)+"%";
+  button.style.top = (10+Math.random()*70)+"%";
 
-  clearTimeout(goldenTimeout);
+  clearTimeout(spawnGolden.timeout);
 
-  goldenTimeout = setTimeout(() => {
+  spawnGolden.timeout = setTimeout(() => {
     button.style.display = "none";
   },10000);
 }
 
 $("goldenCookie").addEventListener("click",() => {
-  const reward = Math.max(50,getCps() * 60,clickPower * 50);
+  const reward = Math.max(50,getCps()*60,clickPower*50);
 
   cookies += reward;
   totalCookies += reward;
 
   $("goldenCookie").style.display = "none";
-  clearTimeout(goldenTimeout);
+  clearTimeout(spawnGolden.timeout);
 
   playBonus();
   showToast("BONUS! +" + format(reward) + " cookies!");
@@ -520,36 +548,40 @@ $("goldenCookie").addEventListener("click",() => {
   saveGame();
 });
 
+setInterval(() => {
+  if (
+    Math.random() < .65 &&
+    $("goldenCookie").style.display !== "block"
+  ) {
+    spawnGolden();
+  }
+},35000);
+
 /* LIMITED SEASONAL DECORATIONS */
 
-function spawnDecoration() {
-  const decoration = document.createElement("div");
-  decoration.className = "snowflake";
+function spawnSnowflake() {
+  const flake = document.createElement("div");
+  flake.className = "snowflake";
 
-  const symbols = ["❄","✦","✧","⭐","❅"];
-  const colors = [
-    "#ff3155","#00b978","#218cff",
-    "#b45cff","#ffbd25","#ff72c5","#ffffff"
-  ];
+  const symbols = ["❄","✦","❅"];
+  const colors = ["#fff","#e8f2ff","#f5d783"];
 
-  decoration.textContent = symbols[Math.floor(Math.random() * symbols.length)];
-  decoration.style.color = colors[Math.floor(Math.random() * colors.length)];
-  decoration.style.left = Math.random() * 100 + "vw";
-  decoration.style.fontSize = (12 + Math.random() * 18) + "px";
+  flake.textContent = symbols[Math.floor(Math.random()*symbols.length)];
+  flake.style.color = colors[Math.floor(Math.random()*colors.length)];
+  flake.style.left = Math.random()*100+"vw";
+  flake.style.fontSize = (11+Math.random()*12)+"px";
 
-  const duration = 6 + Math.random() * 6;
-  decoration.style.animationDuration = duration + "s";
+  const duration = 7+Math.random()*5;
+  flake.style.animationDuration = duration+"s";
 
-  document.body.appendChild(decoration);
+  document.body.appendChild(flake);
 
-  setTimeout(() => decoration.remove(),duration * 1000);
+  setTimeout(() => flake.remove(),duration*1000);
 }
 
-setInterval(spawnDecoration,1100);
+setInterval(spawnSnowflake,1600);
 
 /* SAVE SYSTEM */
-
-const SAVE_KEY = "cookieClickerSave";
 
 function getSaveData() {
   return {
@@ -571,7 +603,8 @@ function saveGame() {
 
     return true;
   } catch (error) {
-    showToast("Couldn't save: browser storage may be full.");
+    console.error("Save failed:",error);
+    $("saveStatus").textContent = "Save failed. Check browser storage.";
     return false;
   }
 }
@@ -589,7 +622,7 @@ function applySaveData(data) {
     !data.counts ||
     typeof data.counts !== "object"
   ) {
-    throw new Error("That file isn't a valid Cookie Clicker save.");
+    throw new Error("That is not a valid Cookie Clicker save.");
   }
 
   const nextCounts = {};
@@ -598,7 +631,7 @@ function applySaveData(data) {
     const value = Number(data.counts[id] ?? 0);
 
     if (!Number.isFinite(value) || value < 0) {
-      throw new Error("The save has invalid upgrade counts.");
+      throw new Error("The save contains an invalid upgrade count.");
     }
 
     nextCounts[id] = Math.floor(value);
@@ -618,12 +651,13 @@ function loadGame() {
   try {
     const raw = localStorage.getItem(SAVE_KEY);
 
-    if (raw) {
-      applySaveData(JSON.parse(raw));
-    }
+    if (!raw) return;
+
+    const data = JSON.parse(raw);
+    applySaveData(data);
   } catch (error) {
-    console.warn("Could not load save:",error);
-    showToast("Couldn't load saved game. Starting fresh.");
+    console.error("Could not load save:",error);
+    showToast("Couldn't load your save.");
   }
 }
 
@@ -671,8 +705,7 @@ $("downloadBtn").addEventListener("click",() => {
   link.remove();
 
   setTimeout(() => URL.revokeObjectURL(url),1000);
-
-  showToast("Save file downloaded!");
+  showToast("Save downloaded!");
 });
 
 $("uploadBtn").addEventListener("click",() => {
@@ -691,9 +724,9 @@ $("uploadInput").addEventListener("change",async event => {
     }
 
     applySaveData(data);
-    showToast("Save imported successfully!");
+    showToast("Save imported!");
   } catch (error) {
-    showToast(error.message || "Couldn't import that save file.");
+    showToast(error.message || "Couldn't import that save.");
   } finally {
     event.target.value = "";
   }
@@ -714,12 +747,11 @@ $("resetBtn").addEventListener("click",() => {
 
   render();
   saveGame();
-
   showToast("Bakery reset!");
   closeSettings();
 });
 
-/* START GAME */
+/* STARTUP */
 
 buildShop(upgrades,$("normalShop"));
 buildShop(christmasUpgrades,$("christmasShop"));
@@ -733,10 +765,10 @@ document.addEventListener("visibilitychange",() => {
 
 window.addEventListener("pagehide",saveGame);
 
-/* Cookie production */
+/* COOKIE PRODUCTION */
 
 setInterval(() => {
-  const gain = getCps() / 10;
+  const gain = getCps()/10;
 
   cookies += gain;
   totalCookies += gain;
@@ -745,17 +777,6 @@ setInterval(() => {
   updateShop();
 },100);
 
-/* Autosave */
+/* AUTOSAVE */
 
 setInterval(saveGame,5000);
-
-/* Bonus cookie appearances */
-
-setInterval(() => {
-  if (
-    Math.random() < .65 &&
-    $("goldenCookie").style.display !== "block"
-  ) {
-    spawnGolden();
-  }
-},35000);
