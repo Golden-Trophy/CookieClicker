@@ -32,10 +32,6 @@ const upgrades = [
   {id:"moon",name:"Moon Bakery",icon:"🌙",desc:"Bakes cookies under the stars.",price:5000000000000000000,cps:16000000000000}
 ];
 
-/*
-  These seasonal upgrades keep their original IDs.
-  That helps existing saves retain their upgrade counts.
-*/
 const christmasUpgrades = [
   {id:"tree",name:"Decorated Tree",icon:"🎄",desc:"A little festive sparkle for the bakery.",price:500,cps:5},
   {id:"snowman",name:"Snowman Helper",icon:"⛄",desc:"A chilly friend who loves cookies.",price:5000,cps:35},
@@ -91,41 +87,34 @@ function showToast(message) {
   }, 1800);
 }
 
-/* --------------------------------------------------
-   MUSIC AND SOUND
--------------------------------------------------- */
+/* MUSIC AND SOUND */
 
 let audioContext = null;
 let musicTimer = null;
 let musicStep = 0;
 
 const melody = [
-  659, 784, 880, 784,
-  659, 523, 587, 659,
-  587, 523, 440, 523,
-  587, 659, 784, 659,
-  880, 784, 659, 587,
-  523, 587, 659, 784
+  659,784,880,784,659,523,587,659,
+  587,523,440,523,587,659,784,659,
+  880,784,659,587,523,587,659,784
 ];
 
 const bassNotes = [
-  130.81, 130.81, 164.81, 164.81,
-  174.61, 174.61, 146.83, 146.83
+  130.81,130.81,164.81,164.81,
+  174.61,174.61,146.83,146.83
 ];
 
 const chords = [
-  [261.63, 329.63, 392.00],
-  [220.00, 261.63, 329.63],
-  [174.61, 220.00, 261.63],
-  [196.00, 246.94, 293.66]
+  [261.63,329.63,392],
+  [220,261.63,329.63],
+  [174.61,220,261.63],
+  [196,246.94,293.66]
 ];
 
 function getAudio() {
   if (!audioContext) {
     const AudioCtx = window.AudioContext || window.webkitAudioContext;
-
     if (!AudioCtx) return null;
-
     audioContext = new AudioCtx();
   }
 
@@ -136,13 +125,7 @@ function getAudio() {
   return audioContext;
 }
 
-function tone(
-  frequency,
-  duration = 0.12,
-  type = "square",
-  volume = 0.035,
-  delay = 0
-) {
+function tone(frequency, duration = .12, type = "square", volume = .035, delay = 0) {
   const context = getAudio();
   if (!context) return;
 
@@ -155,38 +138,34 @@ function tone(
   oscillator.type = type;
   oscillator.frequency.setValueAtTime(frequency, startTime);
 
-  gain.gain.setValueAtTime(0.001, startTime);
-  gain.gain.linearRampToValueAtTime(volume, startTime + 0.015);
-  gain.gain.exponentialRampToValueAtTime(0.001, endTime);
+  gain.gain.setValueAtTime(.001, startTime);
+  gain.gain.linearRampToValueAtTime(volume, startTime + .015);
+  gain.gain.exponentialRampToValueAtTime(.001, endTime);
 
   oscillator.connect(gain);
   gain.connect(context.destination);
 
   oscillator.start(startTime);
-  oscillator.stop(endTime + 0.02);
+  oscillator.stop(endTime + .02);
 }
 
 function playClick() {
   if (!sound) return;
-
-  tone(520, 0.045, "square", 0.025);
-  tone(780, 0.035, "triangle", 0.012, 0.025);
+  tone(520,.045,"square",.025);
+  tone(780,.035,"triangle",.012,.025);
 }
 
 function playPurchase() {
   if (!sound) return;
-
-  tone(523, 0.1, "square", 0.04);
-  tone(659, 0.1, "square", 0.04, 0.08);
-  tone(784, 0.14, "triangle", 0.04, 0.16);
-  tone(1047, 0.18, "triangle", 0.035, 0.24);
+  [523,659,784,1047].forEach((n,i) => {
+    tone(n,.13,"triangle",.04,i*.08);
+  });
 }
 
 function playBonus() {
   if (!sound) return;
-
-  [523, 659, 784, 1047, 1318].forEach((frequency, index) => {
-    tone(frequency, 0.2, "triangle", 0.05, index * 0.075);
+  [523,659,784,1047,1318].forEach((n,i) => {
+    tone(n,.2,"triangle",.05,i*.075);
   });
 }
 
@@ -196,31 +175,23 @@ function playMusicBeat() {
   const note = melody[musicStep % melody.length];
   const bass = bassNotes[musicStep % bassNotes.length];
 
-  // Main melody
-  tone(note, 0.19, "square", 0.018);
+  tone(note,.19,"square",.018);
 
-  // Soft second melody layer
   if (musicStep % 2 === 0) {
-    tone(note * 1.5, 0.13, "triangle", 0.009, 0.025);
+    tone(note * 1.5,.13,"triangle",.009,.025);
+    tone(bass,.28,"triangle",.025);
   }
 
-  // Bass line
-  if (musicStep % 2 === 0) {
-    tone(bass, 0.28, "triangle", 0.025);
-  }
-
-  // Chord accents
   if (musicStep % 4 === 0) {
     const chord = chords[Math.floor(musicStep / 4) % chords.length];
 
-    chord.forEach((frequency, index) => {
-      tone(frequency, 0.32, "triangle", 0.009, index * 0.015);
+    chord.forEach((frequency,index) => {
+      tone(frequency,.32,"triangle",.009,index*.015);
     });
   }
 
-  // Light percussion
   if (musicStep % 2 === 1) {
-    tone(110, 0.035, "sine", 0.018);
+    tone(110,.035,"sine",.018);
   }
 
   musicStep++;
@@ -228,9 +199,8 @@ function playMusicBeat() {
 
 function startMusic() {
   if (!sound || musicTimer) return;
-
   playMusicBeat();
-  musicTimer = setInterval(playMusicBeat, 220);
+  musicTimer = setInterval(playMusicBeat,220);
 }
 
 function stopMusic() {
@@ -242,16 +212,10 @@ function stopMusic() {
 
 function setSound(enabled) {
   sound = enabled;
+  localStorage.setItem("cookieClickerSound",sound ? "on" : "off");
 
-  localStorage.setItem("cookieClickerSound", sound ? "on" : "off");
-
-  $("soundBtn").textContent = sound
-    ? "🔊 Sound: On"
-    : "🔇 Sound: Off";
-
-  $("musicSettingsBtn").textContent = sound
-    ? "🔊 Turn Sound Off"
-    : "🎵 Turn Sound On";
+  $("soundBtn").textContent = sound ? "🔊 Sound: On" : "🔇 Sound: Off";
+  $("musicSettingsBtn").textContent = sound ? "🔊 Turn Sound Off" : "🎵 Turn Sound On";
 
   if (sound) {
     getAudio();
@@ -262,19 +226,12 @@ function setSound(enabled) {
   }
 }
 
-$("soundBtn").addEventListener("click", () => {
-  setSound(!sound);
-});
+$("soundBtn").addEventListener("click",() => setSound(!sound));
+$("musicSettingsBtn").addEventListener("click",() => setSound(!sound));
 
-$("musicSettingsBtn").addEventListener("click", () => {
-  setSound(!sound);
-});
-
-// Browsers stop audio when a page refreshes.
-// Remember the setting, then restart audio after the next user interaction.
 try {
   sound = localStorage.getItem("cookieClickerSound") === "on";
-} catch (error) {
+} catch {
   sound = false;
 }
 
@@ -284,49 +241,39 @@ function restartRememberedMusic() {
   getAudio();
   startMusic();
 
-  document.removeEventListener("pointerdown", restartRememberedMusic);
-  document.removeEventListener("keydown", restartRememberedMusic);
+  document.removeEventListener("pointerdown",restartRememberedMusic);
+  document.removeEventListener("keydown",restartRememberedMusic);
 }
 
 if (sound) {
-  document.addEventListener("pointerdown", restartRememberedMusic);
-  document.addEventListener("keydown", restartRememberedMusic);
+  document.addEventListener("pointerdown",restartRememberedMusic);
+  document.addEventListener("keydown",restartRememberedMusic);
 }
 
-$("soundBtn").textContent = sound
-  ? "🔊 Sound: On"
-  : "🔇 Sound: Off";
+$("soundBtn").textContent = sound ? "🔊 Sound: On" : "🔇 Sound: Off";
+$("musicSettingsBtn").textContent = sound ? "🔊 Turn Sound Off" : "🎵 Turn Sound On";
 
-$("musicSettingsBtn").textContent = sound
-  ? "🔊 Turn Sound Off"
-  : "🎵 Turn Sound On";
+/* SHOP */
 
-/* --------------------------------------------------
-   SHOP
--------------------------------------------------- */
-
-function buildShop(list, container) {
+function buildShop(list,container) {
   container.innerHTML = "";
 
   list.forEach(upgrade => {
     const button = document.createElement("button");
-
     button.className = "upgrade";
     button.type = "button";
 
     button.innerHTML = `
       <div class="upgradeIcon">${upgrade.icon}</div>
-
       <div class="upgradeInfo">
         <div class="upgradeName">${upgrade.name}</div>
         <div class="upgradeDesc">${upgrade.desc}</div>
         <div class="upgradeCost"></div>
       </div>
-
       <div class="upgradeCount">0</div>
     `;
 
-    button.addEventListener("click", () => buyUpgrade(upgrade));
+    button.addEventListener("click",() => buyUpgrade(upgrade));
 
     upgrade.button = button;
     upgrade.costElement = button.querySelector(".upgradeCost");
@@ -337,9 +284,9 @@ function buildShop(list, container) {
 }
 
 function updateShop() {
-  [...upgrades, ...christmasUpgrades].forEach(upgrade => {
+  [...upgrades,...christmasUpgrades].forEach(upgrade => {
     const count = counts[upgrade.id] || 0;
-    const cost = Math.floor(upgrade.price * Math.pow(1.15, count));
+    const cost = Math.floor(upgrade.price * Math.pow(1.15,count));
 
     upgrade.button.disabled = cookies < cost;
     upgrade.costElement.textContent = "🍪 " + format(cost) + " cookies";
@@ -363,9 +310,7 @@ function render() {
 }
 
 function buyUpgrade(upgrade) {
-  const cost = Math.floor(
-    upgrade.price * Math.pow(1.15, counts[upgrade.id])
-  );
+  const cost = Math.floor(upgrade.price * Math.pow(1.15,counts[upgrade.id]));
 
   if (cookies < cost) return;
 
@@ -379,41 +324,36 @@ function buyUpgrade(upgrade) {
   saveGame();
 }
 
-/* --------------------------------------------------
-   COOKIE CLICKING
--------------------------------------------------- */
+/* COOKIE CLICKING */
 
-$("cookie").addEventListener("click", () => {
+$("cookie").addEventListener("click",() => {
   cookies += clickPower;
   totalCookies += clickPower;
 
   playClick();
 
   $("cookie").style.transform = "scale(.94)";
-
-  setTimeout(() => {
-    $("cookie").style.transform = "";
-  }, 80);
+  setTimeout(() => $("cookie").style.transform = "",80);
 
   renderStats();
   updateShop();
   saveGame();
 });
 
-/* --------------------------------------------------
-   CURSOR RINGS
--------------------------------------------------- */
+/* CURSOR RINGS */
 
 /*
-  The first ring has 12 cursors.
-  Each following ring has 6 more spaces than the previous ring:
+  Ring capacities:
   12, 18, 24, 30, 36, 42...
 
-  There is no fixed ring limit.
+  The ring radii are distributed across the available area.
+  Cursor size is calculated from both ring spacing and
+  the space between cursors on each individual ring.
 */
 
 let cursorElements = [];
 let lastCursorAmount = -1;
+let cursorAnimationFrame = null;
 
 function getRingCapacity(ring) {
   return 12 + ring * 6;
@@ -457,7 +397,6 @@ function rebuildCursors() {
 
   for (let i = 0; i < amount; i++) {
     const cursor = document.createElement("div");
-
     cursor.className = "cursorSprite";
     cursor.textContent = "➤";
 
@@ -490,37 +429,45 @@ function animateCursors() {
 
     const centerX = rect.width / 2;
     const centerY = rect.height / 2;
-    const stageSize = Math.min(rect.width, rect.height);
+    const stageSize = Math.min(rect.width,rect.height);
 
-    // Keep every ring inside the cursor area.
-    const innerRadius = stageSize * 0.29;
-    const outerRadius = stageSize * 0.47;
+    // The cookie occupies the middle; cursors start just outside it.
+    const innerRadius = stageSize * .32;
+    const outerRadius = stageSize * .48;
 
     const totalRings = getTotalCursorRings(amount);
+
+    // Give every ring its own radius.
     const ringSpacing = totalRings > 1
       ? (outerRadius - innerRadius) / (totalRings - 1)
       : 0;
 
     const time = performance.now() / 1000;
 
-    // Shrink the cursor icons a little as more rings are added.
-    const iconSize = Math.max(
-      7,
-      Math.min(25, 25 - Math.max(0, totalRings - 3) * 1.2)
-    );
-
-    cursorElements.forEach((cursor, index) => {
+    cursorElements.forEach((cursor,index) => {
       const data = getCursorRing(index);
 
       const radius = innerRadius + data.ring * ringSpacing;
 
+      // Calculate tangential spacing between neighboring cursors.
+      const circumference = Math.PI * 2 * radius;
+      const tangentialSpacing = circumference / data.capacity;
+
+      // Cursor icons shrink if rings get crowded.
+      const radialSize = ringSpacing > 0 ? ringSpacing * .68 : 22;
+      const iconSize = Math.max(
+        5,
+        Math.min(22,radialSize,tangentialSpacing * .65)
+      );
+
       const angle =
         (Math.PI * 2 * data.position / data.capacity) +
-        time * (data.ring % 2 === 0 ? 0.55 : -0.4);
+        time * (data.ring % 2 === 0 ? .35 : -.35);
 
       const x = centerX + Math.cos(angle) * radius;
       const y = centerY + Math.sin(angle) * radius;
 
+      // Point each cursor inward toward the cookie.
       const towardCenter = Math.atan2(
         centerY - y,
         centerX - x
@@ -528,22 +475,20 @@ function animateCursors() {
 
       cursor.style.left = x + "px";
       cursor.style.top = y + "px";
-      cursor.style.fontSize = iconSize + "px";
       cursor.style.width = iconSize + "px";
       cursor.style.height = iconSize + "px";
+      cursor.style.fontSize = iconSize + "px";
       cursor.style.transform =
         `translate(-50%, -50%) rotate(${towardCenter}deg)`;
     });
   }
 
-  requestAnimationFrame(animateCursors);
+  cursorAnimationFrame = requestAnimationFrame(animateCursors);
 }
 
 requestAnimationFrame(animateCursors);
 
-/* --------------------------------------------------
-   BONUS COOKIE
--------------------------------------------------- */
+/* BONUS COOKIE */
 
 function spawnGolden() {
   const button = $("goldenCookie");
@@ -556,17 +501,16 @@ function spawnGolden() {
 
   goldenTimeout = setTimeout(() => {
     button.style.display = "none";
-  }, 10000);
+  },10000);
 }
 
-$("goldenCookie").addEventListener("click", () => {
-  const reward = Math.max(50, getCps() * 60, clickPower * 50);
+$("goldenCookie").addEventListener("click",() => {
+  const reward = Math.max(50,getCps() * 60,clickPower * 50);
 
   cookies += reward;
   totalCookies += reward;
 
   $("goldenCookie").style.display = "none";
-
   clearTimeout(goldenTimeout);
 
   playBonus();
@@ -576,52 +520,34 @@ $("goldenCookie").addEventListener("click", () => {
   saveGame();
 });
 
-/* --------------------------------------------------
-   LIMITED SEASONAL DECORATIONS
--------------------------------------------------- */
+/* LIMITED SEASONAL DECORATIONS */
 
 function spawnDecoration() {
   const decoration = document.createElement("div");
-
   decoration.className = "snowflake";
 
-  const symbols = ["❄", "✦", "✧", "⭐", "❅"];
+  const symbols = ["❄","✦","✧","⭐","❅"];
   const colors = [
-    "#ff3155",
-    "#00b978",
-    "#218cff",
-    "#b45cff",
-    "#ffbd25",
-    "#ff72c5",
-    "#ffffff"
+    "#ff3155","#00b978","#218cff",
+    "#b45cff","#ffbd25","#ff72c5","#ffffff"
   ];
 
-  decoration.textContent =
-    symbols[Math.floor(Math.random() * symbols.length)];
-
-  decoration.style.color =
-    colors[Math.floor(Math.random() * colors.length)];
-
+  decoration.textContent = symbols[Math.floor(Math.random() * symbols.length)];
+  decoration.style.color = colors[Math.floor(Math.random() * colors.length)];
   decoration.style.left = Math.random() * 100 + "vw";
   decoration.style.fontSize = (12 + Math.random() * 18) + "px";
 
   const duration = 6 + Math.random() * 6;
-
   decoration.style.animationDuration = duration + "s";
 
   document.body.appendChild(decoration);
 
-  setTimeout(() => {
-    decoration.remove();
-  }, duration * 1000);
+  setTimeout(() => decoration.remove(),duration * 1000);
 }
 
-// A small number of decorations at a time.
-setInterval(spawnDecoration, 900);
+setInterval(spawnDecoration,1100);
 
-/* --------------------------------------------------
-   SAVE SYSTEM
--------------------------------------------------- */
+/* SAVE SYSTEM */
 
 const SAVE_KEY = "cookieClickerSave";
 
@@ -632,16 +558,13 @@ function getSaveData() {
     cookies,
     totalCookies,
     clickPower,
-    counts: { ...counts }
+    counts: {...counts}
   };
 }
 
 function saveGame() {
   try {
-    localStorage.setItem(
-      SAVE_KEY,
-      JSON.stringify(getSaveData())
-    );
+    localStorage.setItem(SAVE_KEY,JSON.stringify(getSaveData()));
 
     $("saveStatus").textContent =
       "Last saved: " + new Date().toLocaleTimeString();
@@ -685,7 +608,7 @@ function applySaveData(data) {
   totalCookies = Number(data.totalCookies);
   clickPower = Number(data.clickPower);
 
-  Object.assign(counts, nextCounts);
+  Object.assign(counts,nextCounts);
 
   render();
   saveGame();
@@ -699,14 +622,12 @@ function loadGame() {
       applySaveData(JSON.parse(raw));
     }
   } catch (error) {
-    console.warn("Could not load save:", error);
+    console.warn("Could not load save:",error);
     showToast("Couldn't load saved game. Starting fresh.");
   }
 }
 
-/* --------------------------------------------------
-   SETTINGS
--------------------------------------------------- */
+/* SETTINGS */
 
 function openSettings() {
   $("settingsOverlay").classList.add("open");
@@ -716,35 +637,27 @@ function closeSettings() {
   $("settingsOverlay").classList.remove("open");
 }
 
-$("settingsBtn").addEventListener("click", openSettings);
-$("closeSettings").addEventListener("click", closeSettings);
+$("settingsBtn").addEventListener("click",openSettings);
+$("closeSettings").addEventListener("click",closeSettings);
 
-$("settingsOverlay").addEventListener("click", event => {
+$("settingsOverlay").addEventListener("click",event => {
   if (event.target === $("settingsOverlay")) {
     closeSettings();
   }
 });
 
-document.addEventListener("keydown", event => {
-  if (event.key === "Escape") {
-    closeSettings();
-  }
+document.addEventListener("keydown",event => {
+  if (event.key === "Escape") closeSettings();
 });
 
-/* Manual save */
-
-$("saveBtn").addEventListener("click", () => {
-  if (saveGame()) {
-    showToast("Game saved!");
-  }
+$("saveBtn").addEventListener("click",() => {
+  if (saveGame()) showToast("Game saved!");
 });
 
-/* Download save */
-
-$("downloadBtn").addEventListener("click", () => {
+$("downloadBtn").addEventListener("click",() => {
   const blob = new Blob(
-    [JSON.stringify(getSaveData(), null, 2)],
-    { type: "application/json" }
+    [JSON.stringify(getSaveData(),null,2)],
+    {type:"application/json"}
   );
 
   const url = URL.createObjectURL(blob);
@@ -757,20 +670,17 @@ $("downloadBtn").addEventListener("click", () => {
   link.click();
   link.remove();
 
-  setTimeout(() => URL.revokeObjectURL(url), 1000);
+  setTimeout(() => URL.revokeObjectURL(url),1000);
 
   showToast("Save file downloaded!");
 });
 
-/* Upload save */
-
-$("uploadBtn").addEventListener("click", () => {
+$("uploadBtn").addEventListener("click",() => {
   $("uploadInput").click();
 });
 
-$("uploadInput").addEventListener("change", async event => {
+$("uploadInput").addEventListener("change",async event => {
   const file = event.target.files[0];
-
   if (!file) return;
 
   try {
@@ -789,12 +699,8 @@ $("uploadInput").addEventListener("change", async event => {
   }
 });
 
-/* Reset */
-
-$("resetBtn").addEventListener("click", () => {
-  if (!confirm("Are you sure you want to reset your bakery?")) {
-    return;
-  }
+$("resetBtn").addEventListener("click",() => {
+  if (!confirm("Are you sure you want to reset your bakery?")) return;
 
   cookies = 0;
   totalCookies = 0;
@@ -813,23 +719,19 @@ $("resetBtn").addEventListener("click", () => {
   closeSettings();
 });
 
-/* --------------------------------------------------
-   START GAME
--------------------------------------------------- */
+/* START GAME */
 
-buildShop(upgrades, $("normalShop"));
-buildShop(christmasUpgrades, $("christmasShop"));
+buildShop(upgrades,$("normalShop"));
+buildShop(christmasUpgrades,$("christmasShop"));
 
 loadGame();
 render();
 
-document.addEventListener("visibilitychange", () => {
-  if (document.visibilityState === "hidden") {
-    saveGame();
-  }
+document.addEventListener("visibilitychange",() => {
+  if (document.visibilityState === "hidden") saveGame();
 });
 
-window.addEventListener("pagehide", saveGame);
+window.addEventListener("pagehide",saveGame);
 
 /* Cookie production */
 
@@ -841,19 +743,19 @@ setInterval(() => {
 
   renderStats();
   updateShop();
-}, 100);
+},100);
 
 /* Autosave */
 
-setInterval(saveGame, 5000);
+setInterval(saveGame,5000);
 
 /* Bonus cookie appearances */
 
 setInterval(() => {
   if (
-    Math.random() < 0.65 &&
+    Math.random() < .65 &&
     $("goldenCookie").style.display !== "block"
   ) {
     spawnGolden();
   }
-}, 35000);
+},35000);

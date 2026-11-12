@@ -7,120 +7,124 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<div id="game">
-  <header>
-    <div class="lightString"></div>
-    <div id="gameTitle">COOKIE CLICKER</div>
-    <div id="subtitle">A cozy little cookie bakery</div>
-  </header>
+  <div id="game">
+    <header>
+      <div class="lightString"></div>
+      <div class="garland">🎄 ✦ 🎀 ✦ 🎄 ✦ 🎀 ✦ 🎄</div>
+      <div id="gameTitle">COOKIE CLICKER</div>
+      <div id="subtitle">A cozy little cookie bakery</div>
+    </header>
 
-  <main id="main">
-    <section id="bakery">
-      <div id="stats">
-        <div id="cookieCount">0 cookies</div>
-        <div id="cps">0 cookies per second</div>
-        <div id="clickPower">Per click: 1</div>
-      </div>
-
-      <div id="cookieStage">
-        <div id="cookie" aria-label="Click the cookie">
-          <span class="chip"></span><span class="chip"></span>
-          <span class="chip"></span><span class="chip"></span>
-          <span class="chip"></span><span class="chip"></span>
-          <span class="chip"></span><span class="chip"></span>
+    <main id="main">
+      <section id="bakery">
+        <div id="stats">
+          <div id="cookieCount">0 cookies</div>
+          <div id="cps">0 cookies per second</div>
+          <div id="clickPower">Per click: 1</div>
         </div>
-        <div id="cursorCount"></div>
-        <button id="goldenCookie" title="Click for a bonus!">✨</button>
-      </div>
 
-      <div id="clickHint">Click the cookie!</div>
-
-      <div id="bakeryExtras">
-        <div class="extraCard">
-          <div class="extraIcon">🏭</div>
-          <div class="extraLabel">TOTAL BAKED</div>
-          <div class="extraValue" id="totalBaked">0</div>
+        <div id="cookieStage">
+          <div id="cookie" aria-label="Click the cookie">
+            <div id="cookieHat">
+              <div class="hatPom"></div>
+              <div class="hatBrim"></div>
+            </div>
+            <span class="chip"></span><span class="chip"></span>
+            <span class="chip"></span><span class="chip"></span>
+            <span class="chip"></span><span class="chip"></span>
+            <span class="chip"></span><span class="chip"></span>
+          </div>
+          <div id="cursorCount"></div>
+          <button id="goldenCookie" title="Click for a bonus!">✨</button>
         </div>
-        <div class="extraCard">
-          <div class="extraIcon">⚡</div>
-          <div class="extraLabel">COOKIE POWER</div>
-          <div class="extraValue" id="powerDisplay">1</div>
+
+        <div id="clickHint">Click the cookie!</div>
+
+        <div id="bakeryExtras">
+          <div class="extraCard">
+            <div class="extraIcon">🏭</div>
+            <div class="extraLabel">TOTAL BAKED</div>
+            <div class="extraValue" id="totalBaked">0</div>
+          </div>
+          <div class="extraCard">
+            <div class="extraIcon">⚡</div>
+            <div class="extraLabel">COOKIE POWER</div>
+            <div class="extraValue" id="powerDisplay">1</div>
+          </div>
+          <div class="extraCard">
+            <div class="extraIcon">🏠</div>
+            <div class="extraLabel">BUILDINGS</div>
+            <div class="extraValue" id="buildingDisplay">0</div>
+          </div>
         </div>
-        <div class="extraCard">
-          <div class="extraIcon">🏠</div>
-          <div class="extraLabel">BUILDINGS</div>
-          <div class="extraValue" id="buildingDisplay">0</div>
+      </section>
+
+      <aside id="shop">
+        <div class="shopHeader">COOKIE SHOP</div>
+        <div class="shopSub">Spend cookies to make even more cookies!</div>
+
+        <div class="sectionTitle">🍪 Bakery Upgrades</div>
+        <div id="normalShop"></div>
+
+        <div class="sectionTitle special">✨ Seasonal Extras</div>
+        <div class="seasonalNote">A few festive treats for the season.</div>
+        <div id="christmasShop"></div>
+      </aside>
+    </main>
+
+    <footer id="bottomBar">
+      <span>🍪 COOKIE CLICKER</span>
+      <button class="smallButton" id="soundBtn">🔇 Sound: Off</button>
+      <button class="smallButton" id="settingsBtn">⚙ Settings</button>
+    </footer>
+  </div>
+
+  <div id="settingsOverlay">
+    <div id="settingsPanel">
+      <div id="settingsHeader">
+        <span>Game Settings</span>
+        <button id="closeSettings">✕</button>
+      </div>
+
+      <div class="settingsSection">
+        <h3>🔊 Sound & Music</h3>
+        <div class="settingsNote">
+          Turn on the music and cookie sound effects. Your browser may
+          require a click before audio can start after refreshing.
         </div>
+        <button class="settingsAction" id="musicSettingsBtn">🎵 Turn Sound On</button>
       </div>
-    </section>
 
-    <aside id="shop">
-      <div class="shopHeader">COOKIE SHOP</div>
-      <div class="shopSub">Spend cookies to make even more cookies!</div>
-
-      <div class="sectionTitle">🍪 Bakery Upgrades</div>
-      <div id="normalShop"></div>
-
-      <div class="sectionTitle special">✨ Seasonal Extras</div>
-      <div class="seasonalNote">A few festive treats for the season.</div>
-      <div id="christmasShop"></div>
-    </aside>
-  </main>
-
-  <footer id="bottomBar">
-    <span>🍪 COOKIE CLICKER</span>
-    <button class="smallButton" id="soundBtn">🔇 Sound: Off</button>
-    <button class="smallButton" id="settingsBtn">⚙ Settings</button>
-  </footer>
-</div>
-
-<div id="settingsOverlay">
-  <div id="settingsPanel">
-    <div id="settingsHeader">
-      <span>Game Settings</span>
-      <button id="closeSettings">✕</button>
-    </div>
-
-    <div class="settingsSection">
-      <h3>🔊 Sound & Music</h3>
-      <div class="settingsNote">
-        Turn on the music and cookie sound effects. Your browser may require
-        a click before audio can start after refreshing.
+      <div class="settingsSection">
+        <h3>💾 Save Game</h3>
+        <div class="settingsNote">
+          Your game automatically saves every 5 seconds and when you leave the page.
+        </div>
+        <button class="settingsAction" id="saveBtn">💾 Save Now</button>
+        <button class="settingsAction" id="downloadBtn">⬇ Download Save File</button>
+        <button class="settingsAction" id="uploadBtn">⬆ Upload Save File</button>
+        <input id="uploadInput" type="file" accept=".json,application/json" hidden>
+        <div id="saveStatus">Autosave is enabled.</div>
       </div>
-      <button class="settingsAction" id="musicSettingsBtn">🎵 Turn Sound On</button>
-    </div>
 
-    <div class="settingsSection">
-      <h3>💾 Save Game</h3>
-      <div class="settingsNote">
-        Your game automatically saves every 5 seconds and when you leave the page.
+      <div class="settingsSection">
+        <h3>🔄 Game Data</h3>
+        <div class="settingsNote">
+          Resetting erases your current bakery progress. Download a backup first if needed.
+        </div>
+        <button class="settingsAction danger" id="resetBtn">↻ Reset Game</button>
       </div>
-      <button class="settingsAction" id="saveBtn">💾 Save Now</button>
-      <button class="settingsAction" id="downloadBtn">⬇ Download Save File</button>
-      <button class="settingsAction" id="uploadBtn">⬆ Upload Save File</button>
-      <input id="uploadInput" type="file" accept=".json,application/json" hidden>
-      <div id="saveStatus">Autosave is enabled.</div>
-    </div>
 
-    <div class="settingsSection">
-      <h3>🔄 Game Data</h3>
-      <div class="settingsNote">
-        Resetting erases your current bakery progress. Download a backup first if needed.
-      </div>
-      <button class="settingsAction danger" id="resetBtn">↻ Reset Game</button>
-    </div>
-
-    <div class="settingsSection">
-      <h3>🍪 About</h3>
-      <div class="settingsNote">
-        Cookie Clicker — a colorful, cozy cookie bakery.
-        Seasonal decorations can change over time.
+      <div class="settingsSection">
+        <h3>🍪 About</h3>
+        <div class="settingsNote">
+          Cookie Clicker — a colorful cookie bakery with occasional seasonal decorations.
+        </div>
       </div>
     </div>
   </div>
-</div>
 
-<div id="toast"></div>
-<script src="script.js"></script>
+  <div id="toast"></div>
+  <script src="script.js"></script>
 </body>
 </html>

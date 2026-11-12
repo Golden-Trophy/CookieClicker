@@ -3,12 +3,10 @@
 }
 
 :root {
-  --red: #ff3155;
-  --green: #00c878;
-  --blue: #25baff;
-  --yellow: #ffe34d;
-  --purple: #b45cff;
-  --pink: #ff75c8;
+  --red: #e51d43;
+  --green: #087c4b;
+  --gold: #ffdc55;
+  --purple: #a33bc5;
   --dark: #25113c;
 }
 
@@ -48,7 +46,7 @@ button {
 
 header {
   flex-shrink: 0;
-  height: 78px;
+  height: 88px;
   position: relative;
   z-index: 3;
   display: flex;
@@ -57,17 +55,14 @@ header {
   justify-content: center;
   color: white;
   text-shadow: 3px 3px #46134f;
-  background: linear-gradient(
-    90deg,
-    #ed174c,
-    #9b35d8,
-    #176de0,
-    #00a96b,
-    #ed174c
-  );
-  background-size: 300% 100%;
-  animation: rainbow 9s linear infinite;
-  border-bottom: 5px solid var(--yellow);
+  background:
+    repeating-linear-gradient(
+      90deg,
+      transparent 0 34px,
+      #ffffff12 34px 36px
+    ),
+    linear-gradient(90deg, #087d4c, #0b9c68, #087d4c);
+  border-bottom: 6px solid var(--gold);
   box-shadow: 0 4px 0 #5c174d, 0 6px 15px #0005;
 }
 
@@ -75,6 +70,7 @@ header {
   font-size: clamp(21px, 3vw, 32px);
   font-weight: 1000;
   letter-spacing: 3px;
+  z-index: 2;
 }
 
 #subtitle {
@@ -82,6 +78,19 @@ header {
   letter-spacing: 3px;
   margin-top: 3px;
   color: #fff3a8;
+  z-index: 2;
+}
+
+.garland {
+  position: absolute;
+  top: 3px;
+  left: 0;
+  right: 0;
+  text-align: center;
+  font-size: 15px;
+  letter-spacing: 10px;
+  opacity: 0.85;
+  pointer-events: none;
 }
 
 .lightString {
@@ -89,19 +98,13 @@ header {
   left: 0;
   right: 0;
   top: 0;
-  height: 9px;
+  height: 10px;
   background: repeating-linear-gradient(
     90deg,
-    #ffe34d 0 5px,
-    transparent 5px 25px
+    #ffe34d 0 6px,
+    transparent 6px 25px
   );
   filter: drop-shadow(0 0 5px white);
-}
-
-@keyframes rainbow {
-  to {
-    background-position: 300% 0;
-  }
 }
 
 /* Main layout */
@@ -111,7 +114,6 @@ header {
   min-height: 0;
   display: grid;
   grid-template-columns: minmax(0, 1fr) 365px;
-  gap: 0;
 }
 
 #bakery {
@@ -131,30 +133,31 @@ header {
     radial-gradient(ellipse at 50% 45%, #fff8dc 0%, #ffe5a8 55%, #ffb6c9 100%);
 }
 
+/* Candy-cane edge trim */
 #bakery::before {
   content: "";
   position: absolute;
   inset: 0;
   pointer-events: none;
-  opacity: 0.3;
-  background: repeating-linear-gradient(
-    45deg,
-    transparent 0 25px,
-    #fff 25px 27px
-  );
+  opacity: 0.42;
+  background:
+    repeating-linear-gradient(
+      45deg,
+      transparent 0 24px,
+      #fff 24px 27px
+    );
 }
 
+/* Holly corners */
 #bakery::after {
-  content: "✦     ❄     ✦     ❄     ✦";
+  content: "🌿 🔴                                      🔴 🌿";
   position: absolute;
   top: 12px;
-  left: 0;
-  right: 0;
-  text-align: center;
-  font-size: clamp(16px, 2vw, 25px);
-  letter-spacing: clamp(5px, 2vw, 24px);
-  color: #e4a43b;
-  opacity: 0.65;
+  left: 10px;
+  right: 10px;
+  font-size: 20px;
+  white-space: pre;
+  opacity: 0.8;
   pointer-events: none;
 }
 
@@ -191,12 +194,13 @@ header {
 /* Cookie and cursor area */
 
 #cookieStage {
-  width: min(62vw, 52vh, 500px);
-  height: min(62vw, 52vh, 500px);
+  width: min(62vw, 52vh, 520px);
+  height: min(62vw, 52vh, 520px);
   min-width: 240px;
   min-height: 240px;
-  max-width: 500px;
-  max-height: 500px;
+  max-width: 520px;
+  max-height: 520px;
+  flex-shrink: 0;
   position: relative;
   display: flex;
   align-items: center;
@@ -235,6 +239,50 @@ header {
   filter: brightness(1.08);
 }
 
+/* Santa hat attached to the cookie */
+#cookieHat {
+  position: absolute;
+  z-index: 8;
+  top: -22%;
+  left: 28%;
+  width: 48%;
+  height: 35%;
+  transform: rotate(-17deg);
+  pointer-events: none;
+}
+
+#cookieHat::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 7px 0;
+  background: linear-gradient(145deg, #ff5360, #c9002d 75%);
+  clip-path: polygon(3% 100%, 78% 0, 100% 100%);
+  filter: drop-shadow(2px 3px 2px #55200c66);
+}
+
+.hatBrim {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: 17%;
+  border-radius: 12px;
+  background: linear-gradient(#fff, #e9e9e9);
+  box-shadow: 0 2px 3px #57270d66;
+}
+
+.hatPom {
+  position: absolute;
+  right: -3%;
+  top: -8%;
+  width: 22%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, white, #ddd);
+  box-shadow: 0 2px 4px #57270d66;
+  z-index: 2;
+}
+
 .chip {
   position: absolute;
   width: 9%;
@@ -256,24 +304,22 @@ header {
 .cursorSprite {
   position: absolute;
   z-index: 4;
-  width: 30px;
-  height: 30px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 25px;
   color: white;
   text-shadow: 1px 2px #54200e, 0 0 7px #ffe34d;
   pointer-events: none;
   transform-origin: center;
   will-change: left, top, transform;
+  line-height: 1;
 }
 
 #cursorCount {
   position: absolute;
   bottom: 0;
   right: 0;
-  z-index: 5;
+  z-index: 9;
   background: #8c32d6;
   color: white;
   border: 2px solid white;
@@ -286,7 +332,7 @@ header {
 #goldenCookie {
   display: none;
   position: absolute;
-  z-index: 8;
+  z-index: 10;
   font-size: 44px;
   border: 0;
   background: none;
@@ -324,7 +370,7 @@ header {
   padding: 9px 5px;
   text-align: center;
   background: linear-gradient(135deg, #fff, #ffe2f2);
-  box-shadow: 0 4px 0 #d78db3;
+  box-shadow: 0 4px 0 #d98cb9;
 }
 
 .extraCard:nth-child(2) {
@@ -374,7 +420,7 @@ header {
   font-weight: 1000;
   color: white;
   text-shadow: 2px 2px #53205e;
-  background: linear-gradient(100deg, #ed174c, #a833d4, #1679dc, #00a86b);
+  background: linear-gradient(100deg, #087d4c, #d91f47, #087d4c);
   border: 3px solid white;
   box-shadow: 0 4px 0 #63245e;
   margin-bottom: 10px;
@@ -510,7 +556,7 @@ header {
   padding: 5px;
   font-size: 12px;
   font-weight: bold;
-  border-top: 4px solid var(--yellow);
+  border-top: 4px solid var(--gold);
   text-shadow: 1px 1px #42104e;
 }
 
@@ -528,7 +574,7 @@ header {
   filter: brightness(1.12);
 }
 
-/* Seasonal decorations */
+/* Seasonal snowfall */
 
 .snowflake {
   position: fixed;
@@ -600,7 +646,7 @@ header {
   align-items: center;
   justify-content: space-between;
   color: white;
-  background: linear-gradient(90deg, #ed174c, #a833d4, #087d62);
+  background: linear-gradient(90deg, #087d4c, #d91f47, #087d4c);
   border: 2px solid white;
   border-radius: 10px;
   padding: 12px;
