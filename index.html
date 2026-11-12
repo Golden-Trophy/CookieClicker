@@ -1,93 +1,91 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Cookie Clicker</title>
-<link rel="stylesheet" href="style.css">
-<script src="script.js" defer></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Cookie Clicker</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
 <div id="game">
+  <header>
+    <div class="lightString"></div>
+    <div id="gameTitle">COOKIE CLICKER</div>
+    <div id="subtitle">A cozy little cookie bakery</div>
+  </header>
 
-<header>
-  <div class="lightString"></div>
-  <div id="gameTitle">🍪 COOKIE CLICKER 🍪</div>
-  <div id="subtitle">A colorful little bakery</div>
-</header>
+  <main id="main">
+    <section id="bakery">
+      <div id="stats">
+        <div id="cookieCount">0 cookies</div>
+        <div id="cps">0 cookies per second</div>
+        <div id="clickPower">Per click: 1</div>
+      </div>
 
-<div id="main">
-<section id="bakery">
+      <div id="cookieStage">
+        <div id="cookie" aria-label="Click the cookie">
+          <span class="chip"></span><span class="chip"></span>
+          <span class="chip"></span><span class="chip"></span>
+          <span class="chip"></span><span class="chip"></span>
+          <span class="chip"></span><span class="chip"></span>
+        </div>
+        <div id="cursorCount"></div>
+        <button id="goldenCookie" title="Click for a bonus!">✨</button>
+      </div>
 
-  <div id="stats">
-    <div id="cookieCount">0 cookies</div>
-    <div id="cps">per second: 0</div>
-    <div id="clickPower">per click: 1</div>
-  </div>
+      <div id="clickHint">Click the cookie!</div>
 
-  <div id="cookieStage">
-    <div id="cookie">
-      <span class="chip"></span><span class="chip"></span>
-      <span class="chip"></span><span class="chip"></span>
-      <span class="chip"></span><span class="chip"></span>
-      <span class="chip"></span><span class="chip"></span>
-    </div>
-    <div id="cursorCount"></div>
-    <button id="goldenCookie" title="Click for a bonus!">✨</button>
-  </div>
+      <div id="bakeryExtras">
+        <div class="extraCard">
+          <div class="extraIcon">🏭</div>
+          <div class="extraLabel">TOTAL BAKED</div>
+          <div class="extraValue" id="totalBaked">0</div>
+        </div>
+        <div class="extraCard">
+          <div class="extraIcon">⚡</div>
+          <div class="extraLabel">COOKIE POWER</div>
+          <div class="extraValue" id="powerDisplay">1</div>
+        </div>
+        <div class="extraCard">
+          <div class="extraIcon">🏠</div>
+          <div class="extraLabel">BUILDINGS</div>
+          <div class="extraValue" id="buildingDisplay">0</div>
+        </div>
+      </div>
+    </section>
 
-  <div id="clickHint">✨ CLICK THE COOKIE! ✨</div>
+    <aside id="shop">
+      <div class="shopHeader">COOKIE SHOP</div>
+      <div class="shopSub">Spend cookies to make even more cookies!</div>
 
-  <div id="bakeryExtras">
-    <div class="extraCard">
-      <div class="extraIcon">🏭</div>
-      <div class="extraLabel">TOTAL BAKED</div>
-      <div class="extraValue" id="totalBaked">0</div>
-    </div>
-    <div class="extraCard">
-      <div class="extraIcon">⚡</div>
-      <div class="extraLabel">COOKIE POWER</div>
-      <div class="extraValue" id="powerDisplay">1</div>
-    </div>
-    <div class="extraCard">
-      <div class="extraIcon">🏠</div>
-      <div class="extraLabel">BUILDINGS</div>
-      <div class="extraValue" id="buildingDisplay">0</div>
-    </div>
-  </div>
-</section>
+      <div class="sectionTitle">🍪 Bakery Upgrades</div>
+      <div id="normalShop"></div>
 
-<aside id="shop">
-  <div class="shopHeader">🍪 THE BAKERY SHOP 🍪</div>
-  <div class="shopSub">Buy upgrades and build your cookie empire!</div>
+      <div class="sectionTitle special">✨ Seasonal Extras</div>
+      <div class="seasonalNote">A few festive treats for the season.</div>
+      <div id="christmasShop"></div>
+    </aside>
+  </main>
 
-  <div class="sectionTitle">🍪 Bakery Upgrades</div>
-  <div id="normalShop"></div>
-
-  <div class="sectionTitle special">✨ Special Upgrades</div>
-  <div id="christmasShop"></div>
-</aside>
-</div>
-
-<footer id="bottomBar">
-  <span>🍪 COOKIE BAKERY</span>
-  <button class="smallButton" id="soundBtn">🔇 Sound: Off</button>
-  <button class="smallButton" id="settingsBtn">⚙ Settings</button>
-</footer>
+  <footer id="bottomBar">
+    <span>🍪 COOKIE CLICKER</span>
+    <button class="smallButton" id="soundBtn">🔇 Sound: Off</button>
+    <button class="smallButton" id="settingsBtn">⚙ Settings</button>
+  </footer>
 </div>
 
 <div id="settingsOverlay">
   <div id="settingsPanel">
     <div id="settingsHeader">
-      <span>⚙ Game Settings</span>
+      <span>Game Settings</span>
       <button id="closeSettings">✕</button>
     </div>
 
     <div class="settingsSection">
       <h3>🔊 Sound & Music</h3>
       <div class="settingsNote">
-        Enjoy the new layered retro arcade soundtrack and sound effects.
-        Your browser may require a click before music can start after refreshing.
+        Turn on the music and cookie sound effects. Your browser may require
+        a click before audio can start after refreshing.
       </div>
       <button class="settingsAction" id="musicSettingsBtn">🎵 Turn Sound On</button>
     </div>
@@ -107,7 +105,7 @@
     <div class="settingsSection">
       <h3>🔄 Game Data</h3>
       <div class="settingsNote">
-        Resetting erases your current bakery progress. Download a backup first if you want to keep it.
+        Resetting erases your current bakery progress. Download a backup first if needed.
       </div>
       <button class="settingsAction danger" id="resetBtn">↻ Reset Game</button>
     </div>
@@ -115,12 +113,14 @@
     <div class="settingsSection">
       <h3>🍪 About</h3>
       <div class="settingsNote">
-        Cookie Clicker: build your bakery, collect cookies, and unlock upgrades!
+        Cookie Clicker — a colorful, cozy cookie bakery.
+        Seasonal decorations can change over time.
       </div>
     </div>
   </div>
 </div>
 
 <div id="toast"></div>
+<script src="script.js"></script>
 </body>
 </html>
