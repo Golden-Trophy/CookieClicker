@@ -36,8 +36,8 @@ button {
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  border: 4px solid #70418c;
-  border-radius: 11px;
+  border: 0;
+  border-radius: 0;
 }
 
 /* HEADER */
@@ -203,7 +203,7 @@ button {
 
 #stats {
   position: relative;
-  z-index: 2;
+  z-index: 3;
   width: min(92%, 390px);
   padding: 13px 18px;
   text-align: center;
@@ -254,7 +254,7 @@ button {
   align-items: center;
   justify-content: center;
   overflow: visible;
-  z-index: 2;
+  z-index: 1;
 }
 
 .cookie-aura {
@@ -267,12 +267,16 @@ button {
   pointer-events: none;
 }
 
-/* Cursor layer stays behind cookie. */
+/*
+  The cursor layer is deliberately much larger than the cookie stage.
+  This removes the visible square clipping boundary.
+*/
+
 #cursorLayer {
   position: absolute;
-  inset: 0;
+  inset: -1200px;
   z-index: 1;
-  overflow: hidden;
+  overflow: visible;
   pointer-events: none;
 }
 
@@ -324,15 +328,15 @@ button {
   outline-offset: 18px;
 }
 
-/* Santa hat */
+/* SANTA HAT */
 
 #cookieHat {
   position: absolute;
   z-index: 8;
-  top: -23%;
-  left: 25%;
-  width: 53%;
-  height: 39%;
+  top: -13%;
+  left: 22%;
+  width: 58%;
+  height: 42%;
   transform: rotate(-17deg);
   pointer-events: none;
 }
@@ -429,7 +433,7 @@ button {
 
 #clickHint {
   position: relative;
-  z-index: 2;
+  z-index: 3;
   margin-top: -4px;
   color: #a72e47;
   font-size: 13px;
@@ -442,7 +446,7 @@ button {
 
 #bakeryExtras {
   position: relative;
-  z-index: 2;
+  z-index: 3;
   width: min(95%, 760px);
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -692,20 +696,40 @@ button {
   background: linear-gradient(#fff0df, #e6a36d);
 }
 
-/* SNOW */
+/* CONTINUOUS SNOW */
 
 .snowflake {
   position: fixed;
-  top: -25px;
+  top: -35px;
   z-index: 20;
   pointer-events: none;
+  user-select: none;
   color: white;
-  text-shadow: 0 0 7px #fff;
+  text-shadow: 0 0 7px #fff, 0 0 14px #d9edff;
   animation: snowFall linear forwards;
+  will-change: transform;
 }
 
 @keyframes snowFall {
-  to { transform: translate3d(35px, 110vh, 0) rotate(360deg); }
+  0% {
+    transform: translate3d(0, -5vh, 0) rotate(0deg);
+  }
+
+  25% {
+    transform: translate3d(18px, 25vh, 0) rotate(90deg);
+  }
+
+  50% {
+    transform: translate3d(-12px, 55vh, 0) rotate(180deg);
+  }
+
+  75% {
+    transform: translate3d(20px, 80vh, 0) rotate(270deg);
+  }
+
+  100% {
+    transform: translate3d(-8px, 115vh, 0) rotate(360deg);
+  }
 }
 
 /* SETTINGS */

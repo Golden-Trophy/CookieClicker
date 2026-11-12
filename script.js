@@ -179,9 +179,7 @@ $("musicSettingsBtn").addEventListener("click",() => setSound(!sound));
 /* SHOP */
 
 function getUpgradeCost(upgrade) {
-  if (upgrade.id === "cursor") {
-    return 15;
-  }
+  if (upgrade.id === "cursor") return 15;
 
   return Math.floor(
     upgrade.price * Math.pow(1.15,counts[upgrade.id])
@@ -357,11 +355,16 @@ function animateCursors() {
     const stage = $("cookieStage");
     const rect = stage.getBoundingClientRect();
 
-    const centerX = rect.width / 2;
-    const centerY = rect.height / 2;
-    const innerRadius = Math.min(rect.width,rect.height) * .30;
+    /*
+      The cursor layer extends 1200px beyond the stage.
+      Add 1200px to the center so cursor positions stay aligned.
+    */
 
-    // Fixed size and fixed spacing. New rings keep moving outward.
+    const layerOffset = 1200;
+    const centerX = rect.width / 2 + layerOffset;
+    const centerY = rect.height / 2 + layerOffset;
+
+    const innerRadius = Math.min(rect.width,rect.height) * .30;
     const ringSpacing = 30;
     const cursorSize = 20;
     const time = performance.now() / 1000;
@@ -439,28 +442,45 @@ setInterval(() => {
   }
 },35000);
 
-/* LIMITED SEASONAL DECORATIONS */
+/* HEAVY CONTINUOUS SNOWFALL */
 
 function spawnSnowflake() {
   const flake = document.createElement("div");
   flake.className = "snowflake";
 
-  const symbols = ["❄","✦","❅"];
-  const colors = ["#fff","#e8f2ff","#f5d783"];
+  const symbols = ["❄","❅","❆","✻","·","✧"];
+  const colors = ["#fff","#e8f2ff","#f5fbff","#d9edff"];
 
-  flake.textContent = symbols[Math.floor(Math.random()*symbols.length)];
-  flake.style.color = colors[Math.floor(Math.random()*colors.length)];
+  flake.textContent =
+    symbols[Math.floor(Math.random()*symbols.length)];
+
+  flake.style.color =
+    colors[Math.floor(Math.random()*colors.length)];
+
   flake.style.left = Math.random()*100+"vw";
-  flake.style.fontSize = (11+Math.random()*12)+"px";
 
-  const duration = 7+Math.random()*5;
+  const size = 9 + Math.random()*17;
+  flake.style.fontSize = size+"px";
+
+  const duration = 5 + Math.random()*8;
   flake.style.animationDuration = duration+"s";
 
+  flake.style.opacity = .45 + Math.random()*.55;
+
   document.body.appendChild(flake);
-  setTimeout(() => flake.remove(),duration*1000);
+
+  setTimeout(() => flake.remove(),duration*1000+500);
 }
 
-setInterval(spawnSnowflake,1600);
+/* Start with snow already falling. */
+
+for (let i = 0; i < 45; i++) {
+  setTimeout(spawnSnowflake,Math.random()*5000);
+}
+
+/* Keep generating snow continuously. */
+
+setInterval(spawnSnowflake,180);
 
 /* SAVE SYSTEM */
 
