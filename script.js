@@ -459,55 +459,42 @@ function animateCursors() {
 
     const centerX = rect.width / 2;
     const centerY = rect.height / 2;
-    const size = Math.min(rect.width,rect.height);
+    const size = Math.min(rect.width, rect.height);
 
     const innerRadius = size * .30;
-    const outerRadius = size * .49;
 
-    const rings = getTotalRings(amount);
+    // Every new row gets its own additional space.
+    const ringSpacing = 30;
+    const cursorSize = 20;
 
-    const spacing = rings > 1
-      ? (outerRadius-innerRadius)/(rings-1)
-      : 0;
+    const time = performance.now() / 1000;
 
-    const time = performance.now()/1000;
-
-    cursorElements.forEach((cursor,index) => {
+    cursorElements.forEach((cursor, index) => {
       const data = getCursorRing(index);
-      const radius = innerRadius + data.ring*spacing;
 
-      const circumference = Math.PI*2*radius;
-      const aroundSpacing = circumference/data.capacity;
-
-      const iconSize = Math.max(
-        4,
-        Math.min(
-          21,
-          spacing > 0 ? spacing*.72 : 20,
-          aroundSpacing*.65
-        )
-      );
+      // Never compress the rings or shrink the cursors.
+      const radius = innerRadius + data.ring * ringSpacing;
 
       const direction = data.ring % 2 === 0 ? 1 : -1;
+
       const angle =
-        (Math.PI*2*data.position/data.capacity) +
-        time*.32*direction;
+        (Math.PI * 2 * data.position / data.capacity) +
+        time * .32 * direction;
 
-      const x = centerX + Math.cos(angle)*radius;
-      const y = centerY + Math.sin(angle)*radius;
+      const x = centerX + Math.cos(angle) * radius;
+      const y = centerY + Math.sin(angle) * radius;
 
-      const inwardAngle = Math.atan2(
-        centerY-y,
-        centerX-x
-      )*180/Math.PI;
+      const inwardAngle =
+        Math.atan2(centerY - y, centerX - x) * 180 / Math.PI;
 
-      cursor.style.left = x+"px";
-      cursor.style.top = y+"px";
-      cursor.style.width = iconSize+"px";
-      cursor.style.height = iconSize+"px";
-      cursor.style.fontSize = iconSize+"px";
+      cursor.style.left = x + "px";
+      cursor.style.top = y + "px";
+      cursor.style.width = cursorSize + "px";
+      cursor.style.height = cursorSize + "px";
+      cursor.style.fontSize = cursorSize + "px";
+
       cursor.style.transform =
-        `translate(-50%,-50%) rotate(${inwardAngle}deg)`;
+        `translate(-50%, -50%) rotate(${inwardAngle}deg)`;
     });
   }
 
