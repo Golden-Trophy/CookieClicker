@@ -1,282 +1,24 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Cookie Clicker</title>
-<style>
-*{box-sizing:border-box}
-:root{
-  --red:#ff3155;--green:#00c878;--blue:#25baff;
-  --yellow:#ffe34d;--purple:#b45cff;--pink:#ff75c8;
-  --dark:#25113c;--white:#fff9ed;
-}
-html,body{margin:0;width:100%;height:100%;overflow:hidden}
-body{
-  font-family:"Trebuchet MS",Arial,sans-serif;
-  color:var(--dark);
-  background:repeating-linear-gradient(45deg,#ed174c 0 20px,#087d4c 20px 40px,#087d4c 40px 60px,#ed174c 60px 80px);
-}
-button{font-family:inherit;cursor:pointer}
-#game{height:100dvh;display:flex;flex-direction:column;overflow:hidden}
-
-/* Header */
-header{
-  flex-shrink:0;height:78px;position:relative;z-index:3;
-  display:flex;flex-direction:column;align-items:center;justify-content:center;
-  color:white;text-shadow:3px 3px #46134f;
-  background:linear-gradient(90deg,#ed174c,#9b35d8,#176de0,#00a96b,#ed174c);
-  background-size:300% 100%;animation:rainbow 9s linear infinite;
-  border-bottom:5px solid var(--yellow);
-  box-shadow:0 4px 0 #5c174d,0 6px 15px #0005;
-}
-#gameTitle{font-size:clamp(21px,3vw,32px);font-weight:1000;letter-spacing:3px}
-#subtitle{font-size:11px;letter-spacing:3px;margin-top:3px;color:#fff3a8}
-.lightString{
-  position:absolute;left:0;right:0;top:0;height:9px;
-  background:repeating-linear-gradient(90deg,#ffe34d 0 5px,transparent 5px 25px);
-  filter:drop-shadow(0 0 5px white);
-}
-@keyframes rainbow{to{background-position:300% 0}}
-@keyframes blink{50%{opacity:.35}}
-@keyframes wiggle{0%,100%{transform:rotate(-2deg)}50%{transform:rotate(2deg)}}
-
-/* Main layout */
-#main{
-  flex:1;min-height:0;display:grid;
-  grid-template-columns:minmax(0,1fr) 365px;
-  gap:0;
-}
-#bakery{
-  min-width:0;min-height:0;position:relative;overflow:hidden;
-  display:flex;flex-direction:column;align-items:center;justify-content:space-evenly;
-  padding:12px;
-  background:
-    radial-gradient(ellipse at 50% 45%,#fff8dc 0%,#ffe5a8 55%,#ffb6c9 100%);
-}
-#bakery:before{
-  content:"";position:absolute;inset:0;pointer-events:none;opacity:.35;
-  background:repeating-linear-gradient(45deg,transparent 0 25px,#fff 25px 27px);
-}
-#bakery:after{
-  content:"🎄      🎁      ⭐      🎄";
-  position:absolute;top:12px;left:0;right:0;text-align:center;
-  font-size:clamp(18px,3vw,30px);letter-spacing:clamp(5px,3vw,35px);
-  opacity:.75;pointer-events:none;
-}
-#stats{
-  z-index:2;text-align:center;padding:12px 25px;
-  border:4px solid white;border-radius:18px;
-  background:linear-gradient(135deg,#fff,#ffe9a5);
-  box-shadow:0 5px 0 #ed8e47,0 8px 15px #74345c33;
-  min-width:min(90%,330px);
-}
-#cookieCount{font-size:clamp(27px,4vw,44px);font-weight:1000;color:#a52b55;text-shadow:2px 2px #ffd66b}
-#cps{font-weight:bold;color:#087d62;margin-top:3px}
-#clickPower{font-size:13px;color:#8a399c;margin-top:3px}
-#cookieStage{
-  width:min(62vw,52vh,500px);height:min(62vw,52vh,500px);
-  min-width:240px;min-height:240px;max-width:500px;max-height:500px;
-  position:relative;display:flex;align-items:center;justify-content:center;
-  isolation:isolate;z-index:2;
-}
-#cookie{
-  width:49%;height:49%;border-radius:50%;position:relative;z-index:3;
-  border:9px solid #9b4d21;cursor:pointer;user-select:none;
-  background:
-    radial-gradient(circle at 30% 25%,#ffe09b,#d88a3d 62%,#8d3d1d);
-  box-shadow:inset -14px -16px 20px #57270d66,inset 8px 8px 15px #fff2a777,
-    0 12px 25px #55240e66,0 0 0 10px #ffb53c88,0 0 0 17px #ff4e8277,
-    0 0 0 24px #4ac9ff55;
-  transition:transform .08s;
-}
-#cookie:hover{filter:brightness(1.08)}
-.chip{position:absolute;width:9%;height:12%;border-radius:45%;background:#48200e;box-shadow:inset 2px 2px 2px #a66b3a}
-.chip:nth-child(1){top:18%;left:27%;transform:rotate(25deg)}
-.chip:nth-child(2){top:25%;left:65%;transform:rotate(-25deg)}
-.chip:nth-child(3){top:52%;left:18%;transform:rotate(15deg)}
-.chip:nth-child(4){top:66%;left:57%;transform:rotate(35deg)}
-.chip:nth-child(5){top:43%;left:46%;transform:rotate(-15deg)}
-.chip:nth-child(6){top:75%;left:35%;transform:rotate(20deg)}
-.chip:nth-child(7){top:13%;left:48%;transform:rotate(-10deg)}
-.chip:nth-child(8){top:48%;left:76%;transform:rotate(30deg)}
-.cursorSprite{
-  position:absolute;z-index:4;width:30px;height:30px;
-  display:flex;align-items:center;justify-content:center;
-  font-size:25px;color:#fff;text-shadow:1px 2px #54200e,0 0 7px #ffe34d;
-  pointer-events:none;transform-origin:center;
-}
-#cursorCount{
-  position:absolute;bottom:0;right:0;z-index:5;
-  background:#8c32d6;color:white;border:2px solid white;
-  border-radius:20px;padding:5px 10px;font-size:12px;display:none;
-}
-#goldenCookie{
-  display:none;position:absolute;z-index:8;font-size:44px;
-  border:0;background:none;filter:drop-shadow(0 0 12px #ffb700);
-  animation:goldPulse .8s infinite alternate;
-}
-@keyframes goldPulse{to{transform:scale(1.25) rotate(12deg)}}
-#clickHint{z-index:2;text-align:center;font-size:14px;font-weight:bold;color:#9d2762}
-#bakeryExtras{
-  width:min(95%,760px);display:grid;grid-template-columns:repeat(3,1fr);
-  gap:9px;z-index:2;
-}
-.extraCard{
-  border:3px solid white;border-radius:12px;padding:9px 5px;text-align:center;
-  background:linear-gradient(135deg,#fff,#ffe2f2);
-  box-shadow:0 4px 0 #d78db3;
-}
-.extraCard:nth-child(2){background:linear-gradient(135deg,#e0fff0,#9ef5d1);box-shadow:0 4px 0 #40b88c}
-.extraCard:nth-child(3){background:linear-gradient(135deg,#e4f3ff,#a8dfff);box-shadow:0 4px 0 #57a9d8}
-.extraIcon{font-size:23px}
-.extraLabel{font-size:10px;font-weight:bold;color:#71356e;margin-top:3px}
-.extraValue{font-size:15px;font-weight:1000;color:#37204e;margin-top:2px}
-
-/* Shop */
-#shop{
-  min-height:0;overflow-y:auto;padding:12px;
-  background:linear-gradient(180deg,#d7f5ff,#f2d9ff 50%,#ffe1ec);
-  border-left:5px solid white;scrollbar-color:#a44bd5 #f3d9ff;
-}
-.shopHeader{
-  text-align:center;padding:13px 8px;border-radius:13px;
-  font-size:22px;font-weight:1000;color:white;text-shadow:2px 2px #53205e;
-  background:linear-gradient(100deg,#ed174c,#a833d4,#1679dc,#00a86b);
-  border:3px solid white;box-shadow:0 4px 0 #63245e;margin-bottom:10px;
-}
-.shopSub{text-align:center;font-size:11px;color:#713d89;margin:0 0 12px}
-.sectionTitle{
-  margin:16px 0 9px;padding:10px;border-radius:9px;
-  font-size:16px;font-weight:1000;color:white;text-shadow:1px 2px #40204e;
-  background:linear-gradient(90deg,#ed174c,#b638bd,#426be4);
-  border:2px solid white;box-shadow:0 3px 0 #7d3a9d;
-}
-.sectionTitle.special{background:linear-gradient(90deg,#008e5b,#00b99a,#1688c8)}
-.upgrade{
-  display:flex;align-items:center;gap:10px;width:100%;min-height:75px;
-  margin-bottom:9px;padding:9px;text-align:left;
-  border:3px solid white;border-radius:12px;
-  background:linear-gradient(110deg,#fff,#ffe5f0);
-  box-shadow:0 4px 0 #d98cb9;
-  transition:background .15s,box-shadow .15s,border-color .15s;
-}
-.upgrade:nth-child(3n+2){background:linear-gradient(110deg,#f0fff6,#c9f7df);box-shadow:0 4px 0 #6ac69b}
-.upgrade:nth-child(3n){background:linear-gradient(110deg,#f1f4ff,#d9e5ff);box-shadow:0 4px 0 #8c9fe1}
-.upgrade:hover:not(:disabled){border-color:#ffe34d;box-shadow:0 4px 0 #d7a900,0 0 12px #ffe34d}
-.upgrade:active:not(:disabled){filter:brightness(.94)}
-.upgrade:disabled{opacity:.48;cursor:not-allowed;filter:grayscale(.4)}
-.upgradeIcon{
-  width:44px;height:44px;flex-shrink:0;display:grid;place-items:center;
-  border-radius:10px;background:#fff;border:2px solid #e3a8d2;font-size:24px;
-}
-.upgradeInfo{flex:1;min-width:0}
-.upgradeName{font-weight:1000;font-size:14px;color:#4c245e}
-.upgradeDesc{font-size:10px;color:#825c8a;margin-top:4px}
-.upgradeCost{font-size:11px;color:#078454;font-weight:1000;margin-top:5px}
-.upgradeCount{font-size:17px;font-weight:1000;color:#8b2c9d;min-width:23px;text-align:center}
-
-/* Footer */
-#bottomBar{
-  flex-shrink:0;min-height:48px;
-  background:linear-gradient(90deg,#ed174c,#8f35c5,#176de0,#008c5a);
-  color:white;display:flex;justify-content:center;align-items:center;
-  gap:12px;padding:5px;font-size:12px;font-weight:bold;
-  border-top:4px solid var(--yellow);text-shadow:1px 1px #42104e;
-}
-.smallButton{
-  border:2px solid white;background:linear-gradient(135deg,#ffce35,#ff7c38);
-  color:#4a164b;padding:7px 12px;border-radius:8px;font-weight:1000;
-  box-shadow:0 2px 0 #8e3b70;
-}
-.smallButton:hover{filter:brightness(1.12)}
-/* Decorations */
-.snowflake{
-  position:fixed;top:-20px;z-index:10;pointer-events:none;
-  text-shadow:0 0 8px white;animation:fall linear forwards;
-}
-@keyframes fall{to{transform:translateY(110vh) rotate(360deg)}}
-#toast{
-  position:fixed;bottom:65px;left:50%;transform:translateX(-50%);
-  background:linear-gradient(90deg,#ed174c,#a833d4,#087d62);
-  color:white;border:3px solid white;border-radius:12px;
-  padding:11px 18px;z-index:40;opacity:0;transition:opacity .2s;
-  pointer-events:none;font-weight:bold;box-shadow:0 4px 12px #0004;
-  text-align:center;max-width:90vw;
-}
-/* Settings */
-#settingsOverlay{
-  display:none;position:fixed;inset:0;z-index:30;
-  background:#180b2ddd;align-items:center;justify-content:center;padding:15px;
-}
-#settingsOverlay.open{display:flex}
-#settingsPanel{
-  width:min(440px,100%);max-height:90vh;overflow-y:auto;
-  background:linear-gradient(145deg,#fff4fb,#dff8ff);
-  border:5px solid white;border-radius:17px;
-  box-shadow:0 12px 45px #0009;padding:18px;
-}
-#settingsHeader{
-  display:flex;align-items:center;justify-content:space-between;
-  color:white;background:linear-gradient(90deg,#ed174c,#a833d4,#087d62);
-  border:2px solid white;border-radius:10px;padding:12px;
-  margin-bottom:15px;font-size:22px;font-weight:1000;
-}
-#closeSettings{border:2px solid white;background:#ffbd38;color:#4c245e;border-radius:7px;padding:5px 10px;font-size:18px}
-.settingsSection{
-  background:#fff;border:2px solid #d8a5dc;border-radius:10px;
-  padding:12px;margin-top:12px;
-}
-.settingsSection h3{margin:0 0 9px;color:#8c32a7}
-.settingsAction{
-  display:block;width:100%;margin-top:8px;padding:11px;
-  border:2px solid white;border-radius:8px;
-  background:linear-gradient(90deg,#ed174c,#a833d4,#087d62);
-  color:white;font-size:14px;font-weight:bold;
-}
-.settingsAction:hover{filter:brightness(1.12)}
-.settingsAction.danger{background:linear-gradient(90deg,#b81e45,#e44d32)}
-.settingsNote{font-size:12px;color:#63446f;line-height:1.5}
-#saveStatus{font-size:12px;color:#078454;margin-top:8px}
-@media(max-width:700px){
-  #main{grid-template-columns:minmax(0,1fr) 290px}
-  #cookieStage{width:min(55vw,44vh);height:min(55vw,44vh)}
-  header{height:65px}
-  #bakeryExtras{gap:5px}
-}
-@media(max-width:520px){
-  #main{grid-template-columns:minmax(0,1fr) 190px}
-  #shop{padding:7px}
-  .upgrade{gap:6px;padding:7px;min-height:68px}
-  .upgradeIcon{width:34px;height:34px;font-size:19px}
-  .upgradeName{font-size:12px}
-  .upgradeDesc{font-size:9px}
-  .upgradeCost{font-size:10px}
-  #cookieStage{min-width:190px;min-height:190px}
-  #bottomBar{gap:5px;font-size:10px}
-  #bottomBar .smallButton{padding:6px 7px}
-  .extraLabel{font-size:8px}
-  .extraValue{font-size:12px}
-}
-@media(max-height:650px){
-  header{height:55px}
-  #cookieStage{width:min(42vw,43vh);height:min(42vw,43vh);min-width:190px;min-height:190px}
-  #stats{padding:7px 15px}
-  #bakeryExtras{max-width:650px}
-}
-</style>
+<link rel="stylesheet" href="style.css">
+<script src="script.js" defer></script>
 </head>
 <body>
 <div id="game">
+
 <header>
   <div class="lightString"></div>
-  <div id="gameTitle">🎄 COOKIE CLICKER 🎅</div>
-  <div id="subtitle">✨ THE MOST FESTIVE BAKERY IN TOWN ✨</div>
+  <div id="gameTitle">🍪 COOKIE CLICKER 🍪</div>
+  <div id="subtitle">A colorful little bakery</div>
 </header>
 
 <div id="main">
 <section id="bakery">
+
   <div id="stats">
     <div id="cookieCount">0 cookies</div>
     <div id="cps">per second: 0</div>
@@ -294,7 +36,7 @@ header{
     <button id="goldenCookie" title="Click for a bonus!">✨</button>
   </div>
 
-  <div id="clickHint">🎁 CLICK THE COOKIE! 🎁</div>
+  <div id="clickHint">✨ CLICK THE COOKIE! ✨</div>
 
   <div id="bakeryExtras">
     <div class="extraCard">
@@ -308,7 +50,7 @@ header{
       <div class="extraValue" id="powerDisplay">1</div>
     </div>
     <div class="extraCard">
-      <div class="extraIcon">🎄</div>
+      <div class="extraIcon">🏠</div>
       <div class="extraLabel">BUILDINGS</div>
       <div class="extraValue" id="buildingDisplay">0</div>
     </div>
@@ -316,17 +58,19 @@ header{
 </section>
 
 <aside id="shop">
-  <div class="shopHeader">🎁 THE CHRISTMAS SHOP 🎁</div>
-  <div class="shopSub">Ho ho ho! Buy your way to cookie greatness!</div>
+  <div class="shopHeader">🍪 THE BAKERY SHOP 🍪</div>
+  <div class="shopSub">Buy upgrades and build your cookie empire!</div>
+
   <div class="sectionTitle">🍪 Bakery Upgrades</div>
   <div id="normalShop"></div>
-  <div class="sectionTitle special">🎄 Christmas Specials</div>
+
+  <div class="sectionTitle special">✨ Special Upgrades</div>
   <div id="christmasShop"></div>
 </aside>
 </div>
 
 <footer id="bottomBar">
-  <span>🎅 NORTH POLE BAKERY</span>
+  <span>🍪 COOKIE BAKERY</span>
   <button class="smallButton" id="soundBtn">🔇 Sound: Off</button>
   <button class="smallButton" id="settingsBtn">⚙ Settings</button>
 </footer>
@@ -335,401 +79,48 @@ header{
 <div id="settingsOverlay">
   <div id="settingsPanel">
     <div id="settingsHeader">
-      <span>🎄 Game Settings</span>
+      <span>⚙ Game Settings</span>
       <button id="closeSettings">✕</button>
     </div>
+
     <div class="settingsSection">
       <h3>🔊 Sound & Music</h3>
-      <div class="settingsNote">Turn on sound for retro arcade-style Christmas music and cookie sound effects. Your browser may require a click before audio can start.</div>
+      <div class="settingsNote">
+        Enjoy the new layered retro arcade soundtrack and sound effects.
+        Your browser may require a click before music can start after refreshing.
+      </div>
       <button class="settingsAction" id="musicSettingsBtn">🎵 Turn Sound On</button>
     </div>
+
     <div class="settingsSection">
       <h3>💾 Save Game</h3>
-      <div class="settingsNote">Your game automatically saves every 5 seconds and when you leave the page.</div>
+      <div class="settingsNote">
+        Your game automatically saves every 5 seconds and when you leave the page.
+      </div>
       <button class="settingsAction" id="saveBtn">💾 Save Now</button>
       <button class="settingsAction" id="downloadBtn">⬇ Download Save File</button>
       <button class="settingsAction" id="uploadBtn">⬆ Upload Save File</button>
       <input id="uploadInput" type="file" accept=".json,application/json" hidden>
       <div id="saveStatus">Autosave is enabled.</div>
     </div>
+
     <div class="settingsSection">
       <h3>🔄 Game Data</h3>
-      <div class="settingsNote">Resetting erases your current bakery progress. Download a backup first if you want to keep it.</div>
+      <div class="settingsNote">
+        Resetting erases your current bakery progress. Download a backup first if you want to keep it.
+      </div>
       <button class="settingsAction danger" id="resetBtn">↻ Reset Game</button>
     </div>
+
     <div class="settingsSection">
       <h3>🍪 About</h3>
-      <div class="settingsNote">Cookie Clicker: Christmas Edition<br>A colorful retro holiday cookie bakery!</div>
+      <div class="settingsNote">
+        Cookie Clicker: build your bakery, collect cookies, and unlock upgrades!
+      </div>
     </div>
   </div>
 </div>
+
 <div id="toast"></div>
-
-<script>
-const $=id=>document.getElementById(id);
-
-let cookies=0,totalCookies=0,clickPower=1,sound=false,goldenTimeout=null;
-const counts={};
-
-const upgrades=[
- {id:"cursor",name:"Cursor",icon:"🖱️",desc:"Automatically clicks cookies.",price:15,cps:.1},
- {id:"grandma",name:"Grandma",icon:"👵",desc:"A grandma who loves baking.",price:100,cps:1},
- {id:"farm",name:"Cookie Farm",icon:"🌱",desc:"Grow your own cookie ingredients.",price:1100,cps:8},
- {id:"mine",name:"Cookie Mine",icon:"⛏️",desc:"Dig up delicious cookie dough.",price:12000,cps:47},
- {id:"factory",name:"Factory",icon:"🏭",desc:"A whole building full of ovens.",price:130000,cps:260},
- {id:"bank",name:"Cookie Bank",icon:"🏦",desc:"Your cookies earn more cookies.",price:1400000,cps:1400},
- {id:"temple",name:"Cookie Temple",icon:"🏛️",desc:"A peaceful place of cookie worship.",price:20000000,cps:7800},
- {id:"wizard",name:"Wizard Tower",icon:"🧙",desc:"Magic makes the best cookies.",price:330000000,cps:44000},
- {id:"shipment",name:"Cookie Delivery",icon:"🚚",desc:"Cookies from faraway bakeries.",price:5100000000,cps:260000},
- {id:"alchemy",name:"Alchemy Lab",icon:"⚗️",desc:"Turn ordinary things into cookies.",price:75000000000,cps:1600000},
- {id:"portal",name:"Cookie Portal",icon:"🌀",desc:"A doorway to a cookie dimension.",price:1000000000000,cps:10000000},
- {id:"time",name:"Time Machine",icon:"⏰",desc:"Borrow cookies from tomorrow.",price:14000000000000,cps:65000000},
- {id:"antimatter",name:"Antimatter Condenser",icon:"⚛️",desc:"Condense the universe into cookies.",price:170000000000000,cps:430000000},
- {id:"prism",name:"Prism",icon:"💎",desc:"Turn light into delicious cookies.",price:2100000000000000,cps:2900000000},
- {id:"chance",name:"Chance Maker",icon:"🎲",desc:"A little luck goes a long way.",price:26000000000000000,cps:21000000000},
- {id:"fractal",name:"Fractal Engine",icon:"🔷",desc:"Cookies make even more cookies.",price:310000000000000000,cps:150000000000},
- {id:"oven",name:"Extra Oven",icon:"🔥",desc:"More ovens, more cookies.",price:500000000000000000,cps:900000000000},
- {id:"mixer",name:"Stand Mixer",icon:"🥣",desc:"Mixes cookie dough all day.",price:800000000000000000,cps:1800000000000},
- {id:"bakery",name:"Mega Bakery",icon:"🥐",desc:"A bakery on every street.",price:1200000000000000000,cps:3500000000000},
- {id:"robot",name:"Baking Robot",icon:"🤖",desc:"Never gets tired of baking.",price:2000000000000000000,cps:7000000000000},
- {id:"moon",name:"Moon Bakery",icon:"🌙",desc:"Bakes cookies under the stars.",price:5000000000000000000,cps:16000000000000}
-];
-
-/* Keep these IDs so older saves still work. */
-const christmasUpgrades=[
- {id:"tree",name:"Houseplant Shelf",icon:"🎄",desc:"A little greenery for the bakery.",price:500,cps:5},
- {id:"snowman",name:"Sunny Window",icon:"⛄",desc:"A lovely place to watch the weather.",price:5000,cps:35},
- {id:"santa",name:"Santa's Coffee Corner",icon:"🎅",desc:"Coffee and cookies for everyone.",price:100000,cps:550},
- {id:"reindeer",name:"Reindeer Helper",icon:"🦌",desc:"A festive helper for the bakery.",price:2500000,cps:12000},
- {id:"gift",name:"Gift Factory",icon:"🎁",desc:"A present under every tree.",price:50000000,cps:300000},
- {id:"elf",name:"Elf Workshop",icon:"🧝",desc:"Little helpers make lots of cookies.",price:900000000,cps:5000000},
- {id:"northpole",name:"North Pole Oven",icon:"❄️",desc:"The ultimate Christmas bakery.",price:25000000000,cps:180000000}
-];
-
-[...upgrades,...christmasUpgrades].forEach(u=>counts[u.id]=0);
-
-function format(n){
- if(n<1000)return Math.floor(n).toLocaleString();
- const units=["K","M","B","T","Qa","Qi","Sx","Sp","Oc","No","Dc"];
- let i=-1;
- while(n>=1000&&i<units.length-1){n/=1000;i++}
- return n.toFixed(2)+units[i];
-}
-function getCps(){
- return [...upgrades,...christmasUpgrades].reduce((s,u)=>s+counts[u.id]*u.cps,0);
-}
-function getBuildingCount(){
- return Object.values(counts).reduce((a,b)=>a+b,0);
-}
-function showToast(msg){
- const t=$("toast");t.textContent=msg;t.style.opacity=1;
- clearTimeout(showToast.timer);
- showToast.timer=setTimeout(()=>t.style.opacity=0,1800);
-}
-
-/* Retro synthesized audio */
-let audioContext=null,musicTimer=null,musicStep=0;
-const melody=[659,784,880,784,659,523,587,659,587,523,440,523,587,659,784,659];
-function getAudio(){
- if(!audioContext){
-  const AudioCtx=window.AudioContext||window.webkitAudioContext;
-  if(!AudioCtx)return null;
-  audioContext=new AudioCtx();
- }
- if(audioContext.state==="suspended")audioContext.resume();
- return audioContext;
-}
-function tone(freq,duration=.09,type="square",volume=.045,delay=0){
- const ctx=getAudio();if(!ctx)return;
- const osc=ctx.createOscillator(),gain=ctx.createGain();
- osc.type=type;osc.frequency.value=freq;
- gain.gain.setValueAtTime(volume,ctx.currentTime+delay);
- gain.gain.exponentialRampToValueAtTime(.001,ctx.currentTime+delay+duration);
- osc.connect(gain);gain.connect(ctx.destination);
- osc.start(ctx.currentTime+delay);osc.stop(ctx.currentTime+delay+duration);
-}
-function playClick(){
- if(!sound)return;
- tone(520,.055,"square",.035);
-}
-function playPurchase(){
- if(!sound)return;
- tone(523,.09,"square",.045);
- tone(659,.09,"square",.045,.09);
- tone(784,.16,"square",.045,.18);
-}
-function playBonus(){
- if(!sound)return;
- [523,659,784,1047,1318].forEach((n,i)=>tone(n,.18,"triangle",.06,i*.075));
-}
-function startMusic(){
- if(!sound||musicTimer)return;
- musicTimer=setInterval(()=>{
-  if(!sound)return;
-  const note=melody[musicStep%melody.length];
-  tone(note,.22,"square",.018);
-  if(musicStep%4===0)tone(note/2,.24,"triangle",.022);
-  musicStep++;
- },250);
-}
-function stopMusic(){
- if(musicTimer){clearInterval(musicTimer);musicTimer=null}
-}
-function setSound(enabled){
- sound=enabled;
- $("soundBtn").textContent=sound?"🔊 Sound: On":"🔇 Sound: Off";
- $("musicSettingsBtn").textContent=sound?"🔊 Turn Sound Off":"🎵 Turn Sound On";
- if(sound){getAudio();startMusic();playPurchase()}
- else stopMusic();
-}
-$("soundBtn").addEventListener("click",()=>setSound(!sound));
-$("musicSettingsBtn").addEventListener("click",()=>setSound(!sound));
-
-/* Build the shop once to keep buttons from jumping. */
-function buildShop(list,container){
- container.innerHTML="";
- list.forEach(u=>{
-  const b=document.createElement("button");
-  b.className="upgrade";b.type="button";
-  b.innerHTML=`
-   <div class="upgradeIcon">${u.icon}</div>
-   <div class="upgradeInfo">
-    <div class="upgradeName">${u.name}</div>
-    <div class="upgradeDesc">${u.desc}</div>
-    <div class="upgradeCost"></div>
-   </div>
-   <div class="upgradeCount">0</div>`;
-  b.addEventListener("click",()=>buyUpgrade(u));
-  u.button=b;
-  u.costElement=b.querySelector(".upgradeCost");
-  u.countElement=b.querySelector(".upgradeCount");
-  container.appendChild(b);
- });
-}
-function updateShop(){
- [...upgrades,...christmasUpgrades].forEach(u=>{
-  const count=counts[u.id]||0;
-  const cost=Math.floor(u.price*Math.pow(1.15,count));
-  u.button.disabled=cookies<cost;
-  u.costElement.textContent="🍪 "+format(cost)+" cookies";
-  u.countElement.textContent=count;
- });
-}
-function renderStats(){
- $("cookieCount").textContent=format(cookies)+" cookies";
- $("cps").textContent="⚡ "+format(getCps())+" cookies per second";
- $("clickPower").textContent="🍪 Per click: "+format(clickPower);
- $("totalBaked").textContent=format(totalCookies);
- $("powerDisplay").textContent=format(clickPower);
- $("buildingDisplay").textContent=format(getBuildingCount());
-}
-function render(){renderStats();updateShop()}
-
-function buyUpgrade(u){
- const cost=Math.floor(u.price*Math.pow(1.15,counts[u.id]));
- if(cookies<cost)return;
- cookies-=cost;counts[u.id]++;
- playPurchase();
- showToast("🎁 Purchased "+u.name+"!");
- render();saveGame();
-}
-
-/* Cookie clicking */
-$("cookie").addEventListener("click",()=>{
- cookies+=clickPower;totalCookies+=clickPower;
- playClick();
- $("cookie").style.transform="scale(.94)";
- setTimeout(()=>$("cookie").style.transform="",80);
- renderStats();updateShop();saveGame();
-});
-
-/* Animated cursors */
-function animateCursors(){
- const stage=$("cookieStage");
- stage.querySelectorAll(".cursorSprite").forEach(el=>el.remove());
- const amount=counts.cursor||0,shown=Math.min(amount,60);
- const rect=stage.getBoundingClientRect();
- const cx=rect.width/2,cy=rect.height/2;
- const radius=Math.min(rect.width,rect.height)*.43;
- const time=performance.now()/1000;
- for(let i=0;i<shown;i++){
-  const angle=(Math.PI*2*i/shown)+time*.65;
-  const x=cx+Math.cos(angle)*radius,y=cy+Math.sin(angle)*radius;
-  const cursor=document.createElement("div");
-  cursor.className="cursorSprite";cursor.textContent="➤";
-  cursor.style.left=x+"px";cursor.style.top=y+"px";
-  const towardCenter=Math.atan2(cy-y,cx-x)*180/Math.PI;
-  cursor.style.transform=`translate(-50%,-50%) rotate(${towardCenter}deg)`;
-  stage.appendChild(cursor);
- }
- const badge=$("cursorCount");
- if(amount>60){badge.style.display="block";badge.textContent="+"+(amount-60)+" more cursors"}
- else badge.style.display="none";
- requestAnimationFrame(animateCursors);
-}
-requestAnimationFrame(animateCursors);
-
-/* Bonus cookie */
-function spawnGolden(){
- const btn=$("goldenCookie");
- btn.style.display="block";
- btn.style.left=(10+Math.random()*70)+"%";
- btn.style.top=(10+Math.random()*70)+"%";
- goldenTimeout=setTimeout(()=>btn.style.display="none",10000);
-}
-$("goldenCookie").addEventListener("click",()=>{
- const reward=Math.max(50,getCps()*60,clickPower*50);
- cookies+=reward;totalCookies+=reward;
- $("goldenCookie").style.display="none";
- clearTimeout(goldenTimeout);
- playBonus();
- showToast("✨ BONUS! +"+format(reward)+" cookies!");
- render();saveGame();
-});
-
-/* Falling colorful Christmas decorations */
-function snow(){
- const f=document.createElement("div");
- f.className="snowflake";
- const symbols=["❄","✦","✧","⭐","🎄","🎁","❅"];
- const colors=["#ff3155","#00b978","#218cff","#b45cff","#ffbd25","#ff72c5","#ffffff"];
- const i=Math.floor(Math.random()*symbols.length);
- f.textContent=symbols[i];
- f.style.color=colors[Math.floor(Math.random()*colors.length)];
- f.style.left=Math.random()*100+"vw";
- f.style.fontSize=(12+Math.random()*18)+"px";
- const d=5+Math.random()*7;
- f.style.animationDuration=d+"s";
- document.body.appendChild(f);
- setTimeout(()=>f.remove(),d*1000);
-}
-setInterval(snow,450);
-
-/* Save system */
-const SAVE_KEY="cookieClickerSave";
-function getSaveData(){
- return {
-  version:1,savedAt:new Date().toISOString(),
-  cookies,totalCookies,clickPower,counts:{...counts}
- };
-}
-function saveGame(){
- try{
-  localStorage.setItem(SAVE_KEY,JSON.stringify(getSaveData()));
-  $("saveStatus").textContent="Last saved: "+new Date().toLocaleTimeString();
-  return true;
- }catch(e){
-  showToast("Couldn't save: browser storage may be full.");
-  return false;
- }
-}
-function applySaveData(d){
- if(!d||typeof d!=="object"||
- !Number.isFinite(Number(d.cookies))||Number(d.cookies)<0||
- !Number.isFinite(Number(d.totalCookies))||Number(d.totalCookies)<0||
- !Number.isFinite(Number(d.clickPower))||Number(d.clickPower)<1||
- !d.counts||typeof d.counts!=="object"){
-  throw new Error("That file isn't a valid Cookie Clicker save.");
- }
- const nextCounts={};
- Object.keys(counts).forEach(id=>{
-  const value=Number(d.counts[id]??0);
-  if(!Number.isFinite(value)||value<0)throw new Error("The save has invalid upgrade counts.");
-  nextCounts[id]=Math.floor(value);
- });
- cookies=Number(d.cookies);
- totalCookies=Number(d.totalCookies);
- clickPower=Number(d.clickPower);
- Object.assign(counts,nextCounts);
- render();saveGame();
-}
-function loadGame(){
- try{
-  const raw=localStorage.getItem(SAVE_KEY);
-  if(raw)applySaveData(JSON.parse(raw));
- }catch(e){
-  console.warn("Could not load save:",e);
-  showToast("Couldn't load saved game. Starting fresh.");
- }
-}
-
-/* Settings */
-function openSettings(){$("settingsOverlay").classList.add("open")}
-function closeSettings(){$("settingsOverlay").classList.remove("open")}
-$("settingsBtn").addEventListener("click",openSettings);
-$("closeSettings").addEventListener("click",closeSettings);
-$("settingsOverlay").addEventListener("click",e=>{
- if(e.target===$("settingsOverlay"))closeSettings();
-});
-document.addEventListener("keydown",e=>{
- if(e.key==="Escape")closeSettings();
-});
-
-/* Manual save */
-$("saveBtn").addEventListener("click",()=>{
- if(saveGame())showToast("💾 Game saved!");
-});
-
-/* Download save */
-$("downloadBtn").addEventListener("click",()=>{
- const blob=new Blob([JSON.stringify(getSaveData(),null,2)],{type:"application/json"});
- const url=URL.createObjectURL(blob);
- const a=document.createElement("a");
- a.href=url;a.download="cookie-clicker-save.json";
- document.body.appendChild(a);a.click();a.remove();
- setTimeout(()=>URL.revokeObjectURL(url),1000);
- showToast("Save file downloaded!");
-});
-
-/* Upload save */
-$("uploadBtn").addEventListener("click",()=>$("uploadInput").click());
-$("uploadInput").addEventListener("change",async event=>{
- const file=event.target.files[0];if(!file)return;
- try{
-  const data=JSON.parse(await file.text());
-  if(!confirm("Import this save and replace your current progress?"))return;
-  applySaveData(data);
-  showToast("Save imported successfully!");
- }catch(e){
-  showToast(e.message||"Couldn't import that save file.");
- }finally{event.target.value=""}
-});
-
-/* Reset */
-$("resetBtn").addEventListener("click",()=>{
- if(!confirm("Are you sure you want to reset your bakery?"))return;
- cookies=0;totalCookies=0;clickPower=1;
- Object.keys(counts).forEach(id=>counts[id]=0);
- localStorage.removeItem(SAVE_KEY);
- render();saveGame();
- showToast("Bakery reset!");
- closeSettings();
-});
-
-/* Start game */
-buildShop(upgrades,$("normalShop"));
-buildShop(christmasUpgrades,$("christmasShop"));
-loadGame();render();
-
-document.addEventListener("visibilitychange",()=>{
- if(document.visibilityState==="hidden")saveGame();
-});
-window.addEventListener("pagehide",saveGame);
-
-/* Cookie production */
-setInterval(()=>{
- const gain=getCps()/10;
- cookies+=gain;totalCookies+=gain;
- renderStats();updateShop();
-},100);
-
-/* Autosave */
-setInterval(saveGame,5000);
-
-/* Bonus cookie appearances */
-setInterval(()=>{
- if(Math.random()<.65&&$("goldenCookie").style.display!=="block")spawnGolden();
-},35000);
-</script>
 </body>
 </html>
